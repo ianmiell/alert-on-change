@@ -73,10 +73,17 @@ class alert_on_change(ShutItModule):
 		# shutit.fail(msg)                   - Fail the program and exit with status 1
 		# 
 		shutit.install('sqlite3')
-RUN apt-get update && apt-get install -y mailutils ssmtp
-COPY mail.sh /mail.sh
-RUN chmod +x /mail.sh
-https://raw.githubusercontent.com/docker-in-practice/docker-mailer/master/mail.sh
+		shutit.install('mailutils')
+		shutit.install('ssmtp')
+		shutit.install('curl')
+		shutit.install('git')
+		shutit.send('curl https://raw.githubusercontent.com/docker-in-practice/docker-mailer/master/mail.sh > mail.sh')
+		shutit.send('chmod +x mail.sh')
+		shutit.send('git clone https://github.com/ianmiell/alert-on-change.git')
+		shutit.send('cd alert-on-change/context')
+		shutit.send('sqlite3 db',expect='sqlite>')
+		shutit.send('create table if not exists alertonchange (command text unique, output text, email text);')
+		shutit.pause_point()
 		return True
 
 	def get_config(self, shutit):
