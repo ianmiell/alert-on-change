@@ -83,7 +83,7 @@ class alert_on_change(ShutItModule):
 		shutit.send('cd alert-on-change/context')
 		shutit.send('sqlite3 db',expect='sqlite>')
 		shutit.send('create table if not exists alertonchange (command text unique, output text, email text);',expect='sqlite>')
-		shutit.pause_point()
+		shutit.send('.exit')
 		return True
 
 	def get_config(self, shutit):
