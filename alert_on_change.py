@@ -83,6 +83,8 @@ class alert_on_change(ShutItModule):
 		shutit.send('cd alert-on-change/context')
 		shutit.send('sqlite3 db',expect='sqlite>')
 		shutit.send('create table if not exists alertonchange (command text unique, output text, email text);',expect='sqlite>')
+		# 1) For each line, 2) run the command and collect the output, 3) compare with what's there.
+		# 4) If it's the same, do nothing, if it's different, 5) update the db and 6) send a mail.
 		shutit.send('.exit')
 		return True
 
