@@ -82,7 +82,7 @@ class alert_on_change(ShutItModule):
 		shutit.send('git clone https://github.com/ianmiell/alert-on-change.git')
 		shutit.send('cd alert-on-change/context')
 		shutit.send('sqlite3 db',expect='sqlite>')
-		shutit.send('create table if not exists alertonchange (command text unique, output text, email text);')
+		shutit.send('create table if not exists alertonchange (command text unique, output text, email text);',expect='sqlite>')
 		shutit.pause_point()
 		return True
 
