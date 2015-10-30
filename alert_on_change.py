@@ -85,9 +85,10 @@ class alert_on_change(ShutItModule):
 		shutit.send('sqlite3 db',expect='sqlite>')
 		shutit.send('create table if not exists alertonchange (command text unique, output text, email text);',expect='sqlite>')
 		shutit.send('.exit')
-		shutit.send('go get code.google.com/p/go-sqlite/go1/sqlite3')
+		shutit.send('go get code.google.com/p/go-sqlite/go1/sqlite3',note='From: https://godoc.org/code.google.com/p/go-sqlite/go1/sqlite3')
 		# 1) For each line, 2) run the command and collect the output, 3) compare with what's there.
 		# 4) If it's the same, do nothing, if it's different, 5) update the db and 6) send a mail.
+		# see https://astaxie.gitbooks.io/build-web-application-with-golang/content/en/05.3.html for an example
 		shutit.pause_point('')
 		return True
 
