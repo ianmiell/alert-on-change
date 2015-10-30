@@ -78,6 +78,8 @@ class alert_on_change(ShutItModule):
 		shutit.install('curl')
 		shutit.install('git')
 		shutit.install('golang')
+		shutit.send('git config --global user.email ' + shutit.cfg[self.module_id]['git_email'])
+		shutit.send('git config --global user.name ' + shutit.cfg[self.module_id]['git_name'])
 		shutit.send('curl https://raw.githubusercontent.com/docker-in-practice/docker-mailer/master/mail.sh > mail.sh')
 		shutit.send('chmod +x mail.sh')
 		shutit.send('git clone https://github.com/ianmiell/alert-on-change.git')
@@ -100,6 +102,9 @@ class alert_on_change(ShutItModule):
 		# shutit.get_config(self.module_id, 'myconfig', default='a value')
 		#                                      and reference in your code with:
 		# shutit.cfg[self.module_id]['myconfig']
+		shutit.get_config(self.module_id, 'git_name')
+		shutit.get_config(self.module_id, 'git_email')
+		shutit.get_config(self.module_id, 'git_password')
 		return True
 
 	def test(self, shutit):
