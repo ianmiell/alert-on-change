@@ -77,15 +77,18 @@ class alert_on_change(ShutItModule):
 		shutit.install('ssmtp')
 		shutit.install('curl')
 		shutit.install('git')
+		shutit.install('golang')
 		shutit.send('curl https://raw.githubusercontent.com/docker-in-practice/docker-mailer/master/mail.sh > mail.sh')
 		shutit.send('chmod +x mail.sh')
 		shutit.send('git clone https://github.com/ianmiell/alert-on-change.git')
 		shutit.send('cd alert-on-change/context')
 		shutit.send('sqlite3 db',expect='sqlite>')
 		shutit.send('create table if not exists alertonchange (command text unique, output text, email text);',expect='sqlite>')
+		shutit.send('.exit')
+		shutit.send('go get github.com/mattn/go-sqlite3')
 		# 1) For each line, 2) run the command and collect the output, 3) compare with what's there.
 		# 4) If it's the same, do nothing, if it's different, 5) update the db and 6) send a mail.
-		shutit.send('.exit')
+		shutit.pause_point('')
 		return True
 
 	def get_config(self, shutit):
@@ -116,6 +119,6 @@ def module():
 		description='',
 		maintainer='',
 		delivery_methods=['docker'],
-		depends=['shutit.tk.setup']
+		depends=['shutit.tk.go.go']
 	)
 
