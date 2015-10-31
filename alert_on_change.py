@@ -83,7 +83,7 @@ class alert_on_change(ShutItModule):
 		shutit.send('git config --global user.email ' + shutit.cfg[self.module_id]['git_email'])
 		shutit.send('git config --global user.name ' + shutit.cfg[self.module_id]['git_name'])
 		shutit.send('git clone https://github.com/ianmiell/alert-on-change.git')
-		shutit.send('cd alert-on-change/context')
+		shutit.send('cd alert-on-change')
 		shutit.send('echo create database alert_on_change | psql postgres')
 		# TODO: schema - 
 		#shutit.send('create table if not exists alertonchange (command text unique, output text, email text);',expect='sqlite>')
@@ -97,8 +97,9 @@ class alert_on_change(ShutItModule):
 		# 6) send a mail
 		shutit.send('pg_dump alert_on_change -a > DATA.sql')
 		shutit.send('pg_dump alert_on_change -s > SCHEMA.sql')
-		shutit.send("git commit -am 'latest backup'")
-		shutit.send('git push origin master',expect='assword')
+		shutit.send("git commit -am 'latest backup'",check_exit=False)
+		shutit.send('git push origin master',expect='sername')
+		shutit.send(shutit.cfg[self.module_id]['git_username'],expect='assword')
 		shutit.send(shutit.cfg[self.module_id]['git_password'])
 		shutit.pause_point('')
 		shutit.logout()
@@ -114,6 +115,7 @@ class alert_on_change(ShutItModule):
 		# shutit.cfg[self.module_id]['myconfig']
 		shutit.get_config(self.module_id, 'git_name')
 		shutit.get_config(self.module_id, 'git_email')
+		shutit.get_config(self.module_id, 'git_username')
 		shutit.get_config(self.module_id, 'git_password')
 		return True
 

@@ -2,7 +2,7 @@ CREATE TABLE alert_on_change (
     alert_on_change_id integer NOT NULL,
     name text NOT NULL,
     output text NOT NULL default '',
-    last_updated timestamp NOT NULL without time zone DEFAULT now()        
+    last_updated timestamp NOT NULL DEFAULT now()        
 );
 
 
