@@ -85,10 +85,9 @@ class alert_on_change(ShutItModule):
 		shutit.send('git clone https://github.com/ianmiell/alert-on-change.git')
 		shutit.send('cd alert-on-change')
 		shutit.send('echo create database alert_on_change | psql postgres')
-		# TODO: schema - 
-		#shutit.send('create table if not exists alertonchange (command text unique, output text, email text);',expect='sqlite>')
 		shutit.send('psql alert_on_change < SCHEMA.sql')
 		shutit.send('psql alert_on_change < DATA.sql')
+		shutit.send('''echo copy (select alert_on_change_id, command, output from alert_on_change) to '/tmp/alert_on_change.csv' delimiters',' | psql postgres''')
 		# 1) For each line
 		# 2) run the command and collect the output
 		# 3) compare with what's there.
