@@ -25,26 +25,6 @@ COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
 
 SET search_path = public, pg_catalog;
 
-SET default_tablespace = '';
-
-SET default_with_oids = false;
-
---
--- Name: alert_on_change; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
---
-
-CREATE TABLE alert_on_change (
-    alert_on_change_id integer NOT NULL,
-    command text NOT NULL,
-    output text DEFAULT ''::text NOT NULL,
-    last_updated timestamp without time zone DEFAULT now() NOT NULL,
-    common_threshold int default 100 NOT NULL,
-	email_address text NOT NULL
-);
-
-
-ALTER TABLE public.alert_on_change OWNER TO postgres;
-
 --
 -- Name: alert_on_change_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
@@ -59,7 +39,25 @@ CREATE SEQUENCE alert_on_change_id_seq
 
 ALTER TABLE public.alert_on_change_id_seq OWNER TO postgres;
 
-ALTER TABLE ONLY alert_on_change ALTER COLUMN alert_on_change_id SET DEFAULT nextval('alert_on_change_id_seq'::regclass);
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: alert_on_change; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE alert_on_change (
+    alert_on_change_id integer DEFAULT nextval('alert_on_change_id_seq'::regclass) NOT NULL,
+    command text NOT NULL,
+    output text DEFAULT ''::text NOT NULL,
+    last_updated timestamp without time zone DEFAULT now() NOT NULL,
+    common_threshold integer DEFAULT 100 NOT NULL,
+    email_address text NOT NULL
+);
+
+
+ALTER TABLE public.alert_on_change OWNER TO postgres;
 
 --
 -- Name: public; Type: ACL; Schema: -; Owner: postgres
