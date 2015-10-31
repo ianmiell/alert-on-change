@@ -33,7 +33,7 @@ Make a PR on requests.txt, the format is:
 
 ```
 +<COMMAND><TAB><EMAIL ADDRESS><TAB><PERCENT COMMON THRESHOLD>
-``
+```
 
 eg
 
