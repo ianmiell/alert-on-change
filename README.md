@@ -32,7 +32,7 @@ I accept pull requests for new commands and mail addresses.
 Make a PR on requests.txt, the format is:
 
 ```
-+<COMMAND><TAB><EMAIL ADDRESS><TAB><PERCENT COMMON THRESHOLD>
++<COMMAND><TAB><EMAIL ADDRESS><TAB><PERCENT OF WORDS COMMON THRESHOLD>
 ```
 
 eg
