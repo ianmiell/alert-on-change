@@ -1,0 +1,2 @@
+# Format is: +COMMAND<TAB>EMAIL ADDRESS<TAB>COMMON WORDS THRESHOLD PERCENT, eg:
+# +curl bbc.co.uk/news	you@test.com	100
