@@ -86,8 +86,8 @@ class alert_on_change(ShutItModule):
 		shutit.send('git clone https://github.com/ianmiell/alert-on-change.git')
 		shutit.send('cd alert-on-change')
 		shutit.send('echo create database alert_on_change | psql postgres')
-		shutit.send('psql alert_on_change < SCHEMA.sql')
-		shutit.send('psql alert_on_change < DATA.sql')
+		shutit.send('psql alert_on_change < context/SCHEMA.sql')
+		shutit.send('psql alert_on_change < context/DATA.sql')
 		# 1) For each line
 		# 2) run the command and collect the output
 		# 3) compare with what's there.
@@ -95,33 +95,12 @@ class alert_on_change(ShutItModule):
 		# 5) update the db
 		# 6) send a mail
 		shutit.send('''echo "copy (select alert_on_change_id, command, output, common_threshold, email_address from alert_on_change) to '/tmp/alert_on_change.csv' delimiter ','" | psql alert_on_change''')
+		shutit.send_host_file('/tmp/run.sh','context/run.sh')
+		shutit.send('chmod +x /tmp/run.sh')
+		shutit.send('/tmp/run.sh')
 		shutit.pause_point('')
-		shutit.send_and_get_output(r'''IFS=$'\n'
-rm -rf /tmp/mail
-mkdir -p /tmp/mail
-for item in $(cat /tmp/alert_on_change.csv)
-do
-	ID=$(cut -d, -f1 <(echo $item))
-	COMMAND=$(cut -d, -f2 <(echo $item))
-	OLD_OUTPUT=$(cut -d, -f3 <(echo $item))
-	COMMON_THRESHOLD=$(cut -d, -f4 <(echo $item))
-	EMAIL_ADDRESS=$(cut -d, -f5 <(echo $item))
-	NEW_OUTPUT=$(eval $COMMAND)
-	COMMON=$(dwdiff -s <(echo $OLD_OUTPUT) <(echo $NEW_OUTPUT) 2>&1 > /dev/null | tail -1 | sed 's/.* \([0-9]\+\)..common.*/\1/')
-    #echo $OLD_OUTPUT
-    #echo $NEW_OUTPUT
-    #echo $(dwdiff -s <(echo $OLD_OUTPUT) <(echo $NEW_OUTPUT))
-    #echo $COMMON
-    #echo $COMMON_THRESHOLD
-	if [[ $COMMON -lt $COMMON_THRESHOLD ]];
-	then
-		echo "update alert_on_change set output = '$NEW_OUTPUT', last_updated=now()  where alert_on_change_id = $ID" | psql alert_on_change
-		echo "Output of '$COMMAND' has less than $COMMON_THRESHOLD per cent in common with previous" >> /tmp/mail/${EMAIL_ADDRESS}
-	fi
-done''')
-		shutit.pause_point('')
-		shutit.send('pg_dump alert_on_change -a > DATA.sql')
-		shutit.send('pg_dump alert_on_change -s > SCHEMA.sql')
+		shutit.send('pg_dump alert_on_change -a > context/DATA.sql')
+		shutit.send('pg_dump alert_on_change -s > context/SCHEMA.sql')
 		shutit.send("git commit -am 'latest backup'",check_exit=False)
 		shutit.send('git push origin master',expect='sername')
 		shutit.send(shutit.cfg[self.module_id]['git_username'],expect='assword')
