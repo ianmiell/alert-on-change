@@ -41,7 +41,7 @@ eg
 +curl bbc.co.uk/news	test@test.com	80
 ```
 
-Your request, if and when accepted, will get an id (which you will see in DATA.sql). If you want one removed, do the same, but with a '-' at the start, eg:
+Your request, if and when accepted, will get an id (which you will see in [DATA.sql](https://github.com/ianmiell/alert-on-change/blob/master/context/DATA.sql)). If you want one removed, do the same, but with a '-' at the start, eg:
 
 ```
 -curl bbc.co.uk/news	test@test.com	80
