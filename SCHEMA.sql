@@ -36,8 +36,8 @@ SET default_with_oids = false;
 CREATE TABLE alert_on_change (
     alert_on_change_id integer NOT NULL,
     command text NOT NULL,
-    output text NOT NULL default '',
-    last_updated timestamp NOT NULL DEFAULT now()        
+    output text DEFAULT ''::text NOT NULL,
+    last_updated timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
