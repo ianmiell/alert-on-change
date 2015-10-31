@@ -95,7 +95,9 @@ class alert_on_change(ShutItModule):
 		shutit.send('set +H',note='switch off history expansion to protect !')
 		shutit.send('''echo "copy (select alert_on_change_id, command, output, common_threshold, email_address from alert_on_change) to '/tmp/alert_on_change.csv' delimiter '!'" | psql alert_on_change''')
 		shutit.send_host_file('/tmp/run.sh','context/run.sh')
+		shutit.send_host_file('/tmp/run.sh','context/mail.sh')
 		shutit.send('chmod +x /tmp/run.sh')
+		shutit.send('chmod +x /tmp/mail.sh')
 		shutit.send('/tmp/run.sh')
 		shutit.send('pg_dump alert_on_change -a > context/DATA.sql')
 		shutit.send('pg_dump alert_on_change -s > context/SCHEMA.sql')
@@ -104,9 +106,8 @@ class alert_on_change(ShutItModule):
 		shutit.send(shutit.cfg[self.module_id]['git_username'],expect='assword')
 		shutit.send(shutit.cfg[self.module_id]['git_password'])
 		shutit.logout()
-		shutit.pause_point('mailing')
 		# TODO: replace file and email with dynamic based on name
-		shutit.send('echo test | mail  -s $(cat /tmp/mail/ian.miell@gmail.com) testing ssmtp setup" ian.miell@gmail.com')
+		shutit.send('/tmp/mail.sh')
 		return True
 
 	def get_config(self, shutit):
