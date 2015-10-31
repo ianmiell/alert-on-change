@@ -87,7 +87,23 @@ class alert_on_change(ShutItModule):
 		shutit.send('echo create database alert_on_change | psql postgres')
 		shutit.send('psql alert_on_change < SCHEMA.sql')
 		shutit.send('psql alert_on_change < DATA.sql')
-		shutit.send('''echo copy (select alert_on_change_id, command, output from alert_on_change) to '/tmp/alert_on_change.csv' delimiters',' | psql postgres''')
+		shutit.send('''echo "copy (select alert_on_change_id, command, output from alert_on_change, common_threshold) to '/tmp/alert_on_change.csv' delimiter ','" | psql alert_on_change''')
+		output = shutit.send_and_get_output(r'''IFS=$'\n'
+for item in $(cat /tmp/alert_on_change.csv)
+do
+	ID=$(cut -d, -f1 /tmp/alert_on_change.csv)
+	COMMAND=$(cut -d, -f2 /tmp/alert_on_change.csv)
+	OLD_OUTPUT=$(cut -d, -f3 /tmp/alert_on_change.csv)
+	COMMON_THRESHOLD=$(cut -d, -f4 /tmp/alert_on_change.csv)
+	NEW_OUTPUT=$($COMMAND)
+	COMMON=$(dwdiff -s <(echo $OLD_OUTPUT) <(echo $NEW_OUTPUT) 2>&1 > /dev/null | tail -1 | sed 's/.*\([0-9][0-9]\+\)..common.*/\1/')
+	if [[ $COMMON -lt $COMMON_THRESHOLD ]];
+	then
+		echo 
+	fi
+done''')
+		print output
+		shutit.pause_point('')
 		# 1) For each line
 		# 2) run the command and collect the output
 		# 3) compare with what's there.

@@ -37,7 +37,8 @@ CREATE TABLE alert_on_change (
     alert_on_change_id integer NOT NULL,
     command text NOT NULL,
     output text DEFAULT ''::text NOT NULL,
-    last_updated timestamp without time zone DEFAULT now() NOT NULL
+    last_updated timestamp without time zone DEFAULT now() NOT NULL,
+    common_threshold int default 100 NOT NULL
 );
 
 
