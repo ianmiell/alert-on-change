@@ -16,8 +16,8 @@ class alert_on_change(ShutItModule):
 		#                                      by ShutIt with shell prompts.
 		# shutit.multisend(send,send_dict)   - Send a command, dict contains {expect1:response1,expect2:response2,...}
 		# shutit.send_and_get_output(send)   - Returns the output of the sent command
-		# shutit.send_and_match_output(send, matches) 
-		#                                    - Returns True if any lines in output match any of 
+		# shutit.send_and_match_output(send, matches)
+		#                                    - Returns True if any lines in output match any of
 		#                                      the regexp strings in the matches list
 		# shutit.send_until(send,regexps)    - Send command over and over until one of the regexps seen in the output.
 		# shutit.run_script(script)          - Run the passed-in string as a script
@@ -28,7 +28,7 @@ class alert_on_change(ShutItModule):
 		#                                      Use this if your env (or more specifically, prompt) changes at all,
 		#                                      eg reboot, bash, ssh
 		# shutit.logout(command='exit')      - Clean up from a login.
-		# 
+		#
 		# COMMAND HELPER FUNCTIONS
 		# shutit.add_to_bashrc(line)         - Add a line to bashrc
 		# shutit.get_url(fname, locations)   - Get a file via url from locations specified in a list
@@ -49,7 +49,7 @@ class alert_on_change(ShutItModule):
 		# shutit.send_host_dir(path, hostfilepath)
 		#                                    - Send directory and contents to path on the target
 		# shutit.insert_text(text, fname, pattern)
-		#                                    - Insert text into file fname after the first occurrence of 
+		#                                    - Insert text into file fname after the first occurrence of
 		#                                      regexp pattern.
 		# shutit.delete_text(text, fname, pattern)
 		#                                    - Delete text from file fname after the first occurrence of
@@ -71,33 +71,43 @@ class alert_on_change(ShutItModule):
 		# shutit.get_input(msg,default,valid[],boolean?,ispass?)
 		#                                    - Get input from user and return output
 		# shutit.fail(msg)                   - Fail the program and exit with status 1
-		# 
-		shutit.install('sqlite3')
+		#
 		shutit.install('mailutils')
 		shutit.install('ssmtp')
 		shutit.install('curl')
 		shutit.install('git')
-		shutit.install('golang')
-		shutit.send('git config --global user.email ' + shutit.cfg[self.module_id]['git_email'])
-		shutit.send('git config --global user.name ' + shutit.cfg[self.module_id]['git_name'])
+		shutit.install('dwdiff')
+		shutit.login('postgres')
 		shutit.send('curl https://raw.githubusercontent.com/docker-in-practice/docker-mailer/master/mail.sh > mail.sh')
 		shutit.send('chmod +x mail.sh')
+		shutit.send('git config --global user.email ' + shutit.cfg[self.module_id]['git_email'])
+		shutit.send('git config --global user.name ' + shutit.cfg[self.module_id]['git_name'])
 		shutit.send('git clone https://github.com/ianmiell/alert-on-change.git')
 		shutit.send('cd alert-on-change/context')
-		shutit.send('sqlite3 db',expect='sqlite>')
-		shutit.send('create table if not exists alertonchange (command text unique, output text, email text);',expect='sqlite>')
-		shutit.send('.exit')
-		shutit.send('go get code.google.com/p/go-sqlite/go1/sqlite3',note='From: https://godoc.org/code.google.com/p/go-sqlite/go1/sqlite3')
-		# 1) For each line, 2) run the command and collect the output, 3) compare with what's there.
-		# 4) If it's the same, do nothing, if it's different, 5) update the db and 6) send a mail.
-		# see https://astaxie.gitbooks.io/build-web-application-with-golang/content/en/05.3.html for an example
+		shutit.send('echo create database alert_on_change | psql postgres')
+		# TODO: schema - 
+		#shutit.send('create table if not exists alertonchange (command text unique, output text, email text);',expect='sqlite>')
+		shutit.send('psql alert_on_change < SCHEMA.sql')
+		shutit.send('psql alert_on_change < DATA.sql')
+		# 1) For each line
+		# 2) run the command and collect the output
+		# 3) compare with what's there.
+		# 4) If it's the same, do nothing, if it's different (dwdiff -s)
+		# 5) update the db
+		# 6) send a mail
+		shutit.send('pg_dump alert_on_change -a > DATA.sql')
+		shutit.send('pg_dump alert_on_change -s > SCHEMA.sql')
+		shutit.send("git commit -am 'latest backup'")
+		shutit.send('git push origin master',expect='assword')
+		shutit.send(shutit.cfg[self.module_id]['git_password'])
 		shutit.pause_point('')
+		shutit.logout()
 		return True
 
 	def get_config(self, shutit):
 		# CONFIGURATION
 		# shutit.get_config(module_id,option,default=None,boolean=False)
-		#                                    - Get configuration value, boolean indicates whether the item is 
+		#                                    - Get configuration value, boolean indicates whether the item is
 		#                                      a boolean type, eg get the config with:
 		# shutit.get_config(self.module_id, 'myconfig', default='a value')
 		#                                      and reference in your code with:
@@ -125,6 +135,6 @@ def module():
 		description='',
 		maintainer='',
 		delivery_methods=['docker'],
-		depends=['shutit.tk.go.go']
+		depends=['shutit.tk.go.go','shutit.tk.postgres.postgres']
 	)
 
