@@ -103,8 +103,10 @@ class alert_on_change(ShutItModule):
 		shutit.send('git push origin master',expect='sername')
 		shutit.send(shutit.cfg[self.module_id]['git_username'],expect='assword')
 		shutit.send(shutit.cfg[self.module_id]['git_password'])
-		shutit.pause_point('mailing')
 		shutit.logout()
+		shutit.pause_point('mailing')
+		# TODO: replace file and email with dynamic based on name
+		shutit.send('echo test | mail  -s $(cat /tmp/mail/ian.miell@gmail.com) testing ssmtp setup" ian.miell@gmail.com')
 		return True
 
 	def get_config(self, shutit):
