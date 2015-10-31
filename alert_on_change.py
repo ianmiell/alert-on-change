@@ -72,8 +72,6 @@ class alert_on_change(ShutItModule):
 		#                                    - Get input from user and return output
 		# shutit.fail(msg)                   - Fail the program and exit with status 1
 		#
-		shutit.install('mailutils')
-		shutit.install('ssmtp')
 		shutit.install('curl')
 		shutit.install('git')
 		shutit.install('dwdiff')
@@ -99,14 +97,13 @@ class alert_on_change(ShutItModule):
 		shutit.send_host_file('/tmp/run.sh','context/run.sh')
 		shutit.send('chmod +x /tmp/run.sh')
 		shutit.send('/tmp/run.sh')
-		shutit.pause_point('')
 		shutit.send('pg_dump alert_on_change -a > context/DATA.sql')
 		shutit.send('pg_dump alert_on_change -s > context/SCHEMA.sql')
 		shutit.send("git commit -am 'latest backup'",check_exit=False)
 		shutit.send('git push origin master',expect='sername')
 		shutit.send(shutit.cfg[self.module_id]['git_username'],expect='assword')
 		shutit.send(shutit.cfg[self.module_id]['git_password'])
-		shutit.pause_point('')
+		shutit.pause_point('mailing')
 		shutit.logout()
 		return True
 
@@ -142,6 +139,6 @@ def module():
 		description='',
 		maintainer='',
 		delivery_methods=['docker'],
-		depends=['shutit.tk.postgres.postgres']
+		depends=['shutit.tk.gmailer.gmailer','shutit.tk.postgres.postgres']
 	)
 
