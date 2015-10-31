@@ -57,6 +57,8 @@ CREATE SEQUENCE alert_on_change_id_seq
 
 ALTER TABLE public.alert_on_change_id_seq OWNER TO postgres;
 
+ALTER TABLE ONLY alert_on_change ALTER COLUMN alert_on_change_id SET DEFAULT nextval('alert_on_change_id_seq'::regclass);
+
 --
 -- Name: public; Type: ACL; Schema: -; Owner: postgres
 --
