@@ -31,7 +31,7 @@ SET search_path = public, pg_catalog;
 
 CREATE TABLE alert_on_change (
     alert_on_change_id integer NOT NULL,
-    name text NOT NULL,
+    command text NOT NULL,
     output text NOT NULL default '',
     last_updated timestamp NOT NULL DEFAULT now()        
 );
