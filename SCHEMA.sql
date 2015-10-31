@@ -25,8 +25,12 @@ COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
 
 SET search_path = public, pg_catalog;
 
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
 --
--- Name: alert_on_change_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: alert_on_change; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE alert_on_change (
@@ -35,6 +39,13 @@ CREATE TABLE alert_on_change (
     output text NOT NULL default '',
     last_updated timestamp NOT NULL DEFAULT now()        
 );
+
+
+ALTER TABLE public.alert_on_change OWNER TO postgres;
+
+--
+-- Name: alert_on_change_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
 
 CREATE SEQUENCE alert_on_change_id_seq
     START WITH 1

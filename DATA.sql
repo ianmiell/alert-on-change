@@ -12,6 +12,14 @@ SET client_min_messages = warning;
 SET search_path = public, pg_catalog;
 
 --
+-- Data for Name: alert_on_change; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY alert_on_change (alert_on_change_id, name, output, last_updated) FROM stdin;
+\.
+
+
+--
 -- Name: alert_on_change_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
