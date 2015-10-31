@@ -94,6 +94,7 @@ class alert_on_change(ShutItModule):
 		# 4) If it's the same, do nothing, if it's different (dwdiff -s)
 		# 5) update the db
 		# 6) send a mail
+		shutit.send('set +H',note='switch off history expansion to protect !')
 		shutit.send('''echo "copy (select alert_on_change_id, command, output, common_threshold, email_address from alert_on_change) to '/tmp/alert_on_change.csv' delimiter '!'" | psql alert_on_change''')
 		shutit.send_host_file('/tmp/run.sh','context/run.sh')
 		shutit.send('chmod +x /tmp/run.sh')
