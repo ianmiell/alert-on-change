@@ -15,7 +15,8 @@ SET search_path = public, pg_catalog;
 -- Data for Name: alert_on_change; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY alert_on_change (alert_on_change_id, command, output, last_updated) FROM stdin;
+COPY alert_on_change (alert_on_change_id, command, output, last_updated, common_threshold, email_address) FROM stdin;
+1	curl https://github.com/docker/docker/tags | html2text | sed -n "/Releases Tags/,/PreviousNext/p"		2015-10-31 15:37:47.722053	100	ian.miell@gmail.com
 \.
 
 
@@ -23,7 +24,7 @@ COPY alert_on_change (alert_on_change_id, command, output, last_updated) FROM st
 -- Name: alert_on_change_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('alert_on_change_id_seq', 1, false);
+SELECT pg_catalog.setval('alert_on_change_id_seq', 1, true);
 
 
 --
