@@ -95,7 +95,7 @@ class alert_on_change(ShutItModule):
 		shutit.send('set +H',note='switch off history expansion to protect !')
 		shutit.send('''echo "copy (select alert_on_change_id, command, output, common_threshold, email_address from alert_on_change) to '/tmp/alert_on_change.csv' delimiter '!'" | psql alert_on_change''')
 		shutit.send_host_file('/tmp/run.sh','context/run.sh')
-		shutit.send_host_file('/tmp/run.sh','context/mail.sh')
+		shutit.send_host_file('/tmp/mail.sh','context/mail.sh')
 		shutit.send('chmod +x /tmp/run.sh')
 		shutit.send('chmod +x /tmp/mail.sh')
 		shutit.send('/tmp/run.sh')
