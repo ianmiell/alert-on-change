@@ -5,7 +5,7 @@
 Make a PR on [requests.txt](https://github.com/ianmiell/alert-on-change/blob/master/requests.txt) like this:
 
 ```
-+curl somewebsite.com	you@example.com
++curl somewebsite.com	you@example.com	100
 ```
 
 and this will automatically mail you when the output of the command changes.
