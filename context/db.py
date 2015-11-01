@@ -17,22 +17,26 @@ def main():
 	# Because cursor objects are iterable we can just call 'for - in' on
 	# the cursor object and the cursor will automatically advance itself
 	# each iteration.
-	# This loop should run 1000 times, assuming there are at least 1000
-	# records in 'my_table'
 	for row in cursor:
 		alert_on_change_id = row[0]
 		command = row[1]
 		output = row[2]
 		common_threshold = row[3]
 		email_address = row[4]
-		new_output = commands.getstatusoutput(command)
-		print alert_on_change_id
-		print new_output
-		print output
+		new_output = commands.getoutput(command)
+		f = open("/tmp/new", "w")
+		f.write(new_output)
+		f.close()
+		f = open("/tmp/old", "w")
+		f.write(output)
+		f.close()
+		common_percent = int(commands.getoutput(r"""dwdiff -s /tmp/old /tmp/new 2>&1 > /dev/null | tail -1 | sed 's/.* \([0-9]\+\)..common.*/\1/') | sed 's/.*0 words.*/0/'"""))
 		cursor2 = conn.cursor()
-		cursor2.execute("""update alert_on_change set output=%s, last_updated=now() where alert_on_change_id = %s""",(output,alert_on_change_id))
-	# retrieve the records from the database
-	records = cursor.fetchall()
+		if common_percent < int(common_threshold):
+			cursor2.execute("""update alert_on_change set output=%s, last_updated=now() where alert_on_change_id = %s""",(new_output,alert_on_change_id))
+		else:
+			cursor2.execute("""update alert_on_change last_updated=now() where alert_on_change_id = %s""",(alert_on_change_id,))
+		commands.getoutput('rm -f /tmp/new /tmp/old')
  
  
 if __name__ == "__main__":
