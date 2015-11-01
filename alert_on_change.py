@@ -92,9 +92,6 @@ class alert_on_change(ShutItModule):
 		# 6) send a mail
 		shutit.send_host_file('/tmp/db.py','context/db.py')
 		shutit.send('python /tmp/db.py')
-		# TODO: mailing
-		shutit.send_host_file('/tmp/mail.sh','context/mail.sh')
-		shutit.send('chmod +x /tmp/mail.sh')
 		shutit.send('pg_dump alert_on_change -a > context/DATA.sql')
 		shutit.send('pg_dump alert_on_change -s > context/SCHEMA.sql')
 		shutit.send("git commit -am 'latest backup'",check_exit=False)
@@ -102,8 +99,6 @@ class alert_on_change(ShutItModule):
 		shutit.send(shutit.cfg[self.module_id]['git_username'],expect='assword')
 		shutit.send(shutit.cfg[self.module_id]['git_password'])
 		shutit.logout()
-		# TODO: replace file and email with dynamic based on name
-		shutit.send('/tmp/mail.sh')
 		return True
 
 	def get_config(self, shutit):
