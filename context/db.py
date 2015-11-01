@@ -32,6 +32,8 @@ def main():
 		f.close()
 		common_percent = int(commands.getoutput(r"""dwdiff -s /tmp/old /tmp/new 2>&1 > /dev/null | tail -1 | sed 's/.* \([0-9]\+\)..common.*/\1/' | sed 's/.*0 words.*/0/'"""))
 		cursor2 = conn.cursor()
+		print commont_percent
+		print int(common_threshold)
 		if common_percent < int(common_threshold):
 			cursor2.execute("""update alert_on_change set output=%s, last_updated=now() where alert_on_change_id = %s""",(new_output,alert_on_change_id))
 		else:
