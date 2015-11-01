@@ -10,6 +10,7 @@ Make a PR on [requests.txt](https://github.com/ianmiell/alert-on-change/blob/mas
 
 and this will automatically mail you when the output of the command changes.
 
+## Overview
 
 This sends an email when the output of a command changes. For example:
 
@@ -23,7 +24,9 @@ or even:
 curl somewebsite.com | html2text | grep -wi shutit | wc -l
 ```
 
-Obviously, the output of this can change a little bit, so you can specify a percentage of words common to old and new in the output and it will work out if the diff has less than that percentage of words in common. This defaults to 100, so any change will mail you.
+### Tuning the "Common Words Percentage Trigger"
+
+Obviously, the output of this can change a little bit, so you can specify a percentage of words common to old and new in the output and it will work out if the diff has less than that percentage of words in common. This defaults to 100, so any change will mail you. 0 would never mail you.
 
 ## Adding Your Command
 
@@ -51,4 +54,4 @@ Your request, if and when accepted, will get an id (which you will see in [DATA.
 
 Internally, it uses 'dwdiff -s' to gather stats on the difference between the output when the last mail was sent and the current one.
 
-All the code and data is stored on github, and the application is phoenix-deployed using [ShutIt](https://github.com/ianmiell/shutit.git)
+All the code and data is stored on github, and the application is phoenix-deployed using a [ShutIt](https://github.com/ianmiell/shutit.git) [script](https://github.com/ianmiell/alert-on-change/blob/master/alert_on_change.py#L75)
