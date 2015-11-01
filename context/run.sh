@@ -14,7 +14,7 @@ do
 	EMAIL_ADDRESS=$(cut -d! -f5 <(echo $item))
 	NEW_OUTPUT=$(eval $COMMAND)
 	# Diff old and new output, and extract the common words percentage
-	COMMON=$(dwdiff -s <(echo $OLD_OUTPUT) <(echo $NEW_OUTPUT) 2>&1 > /dev/null | tail -1 | sed 's/.* \([0-9]\+\)..common.*/\1/')
+	COMMON=$(dwdiff -s <(echo $OLD_OUTPUT) <(echo $NEW_OUTPUT) 2>&1 > /dev/null | tail -1 | sed 's/.* \([0-9]\+\)..common.*/\1/') | sed 's/.*0 words.*/0/'
 	echo ================================================================================
 	echo $OLD_OUTPUT
 	echo ================================================================================
