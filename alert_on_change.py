@@ -72,10 +72,7 @@ class alert_on_change(ShutItModule):
 		#                                    - Get input from user and return output
 		# shutit.fail(msg)                   - Fail the program and exit with status 1
 		#
-		shutit.install('curl')
-		shutit.install('git')
-		shutit.install('dwdiff')
-		shutit.install('html2text')
+		shutit.install('curl git dwdiff html2text python-psycopg2')
 		shutit.login('postgres')
 		shutit.send('curl https://raw.githubusercontent.com/docker-in-practice/docker-mailer/master/mail.sh > mail.sh')
 		shutit.send('chmod +x mail.sh')
@@ -93,8 +90,8 @@ class alert_on_change(ShutItModule):
 		# 4) If it's the same, do nothing, if it's different (dwdiff -s)
 		# 5) update the db
 		# 6) send a mail
-		shutit.send_host_file('db.py','context/db.py')
-		shutit.send('python db.py')
+		shutit.send_host_file('/tmp/db.py','context/db.py')
+		shutit.send('python /tmp/db.py')
 		shutit.pause_point('python psycopg')
 		shutit.send('set +H',note='switch off history expansion to protect !')
 		shutit.send('''echo "copy (select alert_on_change_id, command, output, common_threshold, email_address from alert_on_change) to '/tmp/alert_on_change.csv' delimiter '!'" | psql alert_on_change''')
