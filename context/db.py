@@ -34,7 +34,7 @@ def main():
 		cursor2 = conn.cursor()
 		if common_percent < int(common_threshold):
 			cursor2.execute("""update alert_on_change set output=%s, last_updated=now() where alert_on_change_id = %s""",(new_output.encode('latin_1'),alert_on_change_id))
-			commands.getoutput('''mail -s "alert" --debug-level=100 ''' + email_address)
+			commands.getoutput('''echo 'msg' | mail -s "alert" --debug-level=100 ''' + email_address)
 		else:
 			cursor2.execute("""update alert_on_change set last_updated=now() where alert_on_change_id = %s""",(alert_on_change_id,))
 		commands.getoutput('rm -f /tmp/new /tmp/old')
