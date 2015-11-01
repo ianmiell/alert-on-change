@@ -31,6 +31,9 @@ do
 	then
 		echo "update alert_on_change set output = '$NEW_OUTPUT', last_updated=now()  where alert_on_change_id = $ID" | psql alert_on_change
 		echo "Output of '$COMMAND' has less than $COMMON_THRESHOLD per cent in common with previous" >> /tmp/mail/${EMAIL_ADDRESS}
+		echo "<br/>$OLD_OUTPUT" >> /tmp/mail/${EMAIL_ADDRESS}
+		echo "<br/>$NEW_OUTPUT" >> /tmp/mail/${EMAIL_ADDRESS}
+		echo "<br/>" >> /tmp/mail/${EMAIL_ADDRESS}
 	else
 		echo "update alert_on_change set last_updated=now() where alert_on_change_id = $ID" | psql alert_on_change
 	fi
