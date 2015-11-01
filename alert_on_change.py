@@ -92,14 +92,9 @@ class alert_on_change(ShutItModule):
 		# 6) send a mail
 		shutit.send_host_file('/tmp/db.py','context/db.py')
 		shutit.send('python /tmp/db.py')
-		shutit.pause_point('python psycopg')
-		shutit.send('set +H',note='switch off history expansion to protect !')
-		shutit.send('''echo "copy (select alert_on_change_id, command, output, common_threshold, email_address from alert_on_change) to '/tmp/alert_on_change.csv' delimiter '!'" | psql alert_on_change''')
-		shutit.send_host_file('/tmp/run.sh','context/run.sh')
+		# TODO: mailing
 		shutit.send_host_file('/tmp/mail.sh','context/mail.sh')
-		shutit.send('chmod +x /tmp/run.sh')
 		shutit.send('chmod +x /tmp/mail.sh')
-		shutit.send('/tmp/run.sh')
 		shutit.send('pg_dump alert_on_change -a > context/DATA.sql')
 		shutit.send('pg_dump alert_on_change -s > context/SCHEMA.sql')
 		shutit.send("git commit -am 'latest backup'",check_exit=False)
