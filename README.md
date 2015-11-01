@@ -26,7 +26,9 @@ curl somewebsite.com | html2text | grep -wi shutit | wc -l
 
 ### Tuning the "Common Words Percentage Trigger"
 
-Obviously, the output of this can change a little bit, so you can specify a percentage of words common to old and new in the output and it will work out if the diff has less than that percentage of words in common. This defaults to 100, so any change will mail you. 0 would never mail you.
+Obviously, the output of this can change a little bit and you don't care (eg a timestamp on the page), so you can specify a percentage of words common to old and new in the output and it will work out if the diff has less than that percentage of words in common before alerting you.
+
+This defaults to 100, so any change will mail you. 0 would never mail you.
 
 ## Adding Your Command
 
@@ -49,6 +51,12 @@ Your request, if and when accepted, will get an id (which you will see in [DATA.
 ```
 -curl bbc.co.uk/news	test@test.com	80
 ```
+
+## Why?
+
+I often want to be alerted when a new version of software comes out and release notes updated, or when something is mentioned on a page.
+
+Most services that provide this either require payment or are based on visual diffs. I only care about content, and don't want to pay.
 
 ## How Does it Work?
 
