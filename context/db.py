@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import psycopg2
 import psycopg2.extras
+import commands
  
 def main():
 	conn_string = "host='localhost' dbname='alert_on_change' user='postgres' password='password'"
@@ -18,10 +19,16 @@ def main():
 	# each iteration.
 	# This loop should run 1000 times, assuming there are at least 1000
 	# records in 'my_table'
-	row_count = 0
 	for row in cursor:
-		row_count += 1
-		print "row: %s    %s\n" % (row_count, row)
+		alert_on_change_id = row[0]
+		command = row[1]
+		output = row[2]
+		common_threshold = row[3]
+		email_address = row[4]
+		new_output = commands.getstatusoutput(command)
+		print alert_on_change_id
+		print new_output
+		print output
 	# retrieve the records from the database
 	records = cursor.fetchall()
  
