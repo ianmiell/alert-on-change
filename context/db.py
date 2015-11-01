@@ -23,12 +23,12 @@ def main():
 		output = row[2]
 		common_threshold = row[3]
 		email_address = row[4]
-		new_output = commands.getoutput(command)
+		new_output = commands.getoutput(command).decode('latin_1')
 		f = open("/tmp/new", "w")
-		f.write(new_output)
+		f.write(new_output.encode('latin_1'))
 		f.close()
 		f = open("/tmp/old", "w")
-		f.write(output)
+		f.write(output.encode('latin_1'))
 		f.close()
 		common_percent = int(commands.getoutput(r"""dwdiff -s /tmp/old /tmp/new 2>&1 > /dev/null | tail -1 | sed 's/.* \([0-9]\+\)..common.*/\1/' | sed 's/.*0 words.*/0/'"""))
 		cursor2 = conn.cursor()
