@@ -29,6 +29,8 @@ def main():
 		print alert_on_change_id
 		print new_output
 		print output
+		cursor2 = conn.cursor()
+		cursor2.execute("""update alert_on_change (output, last_updated) values (%s,now()) where alert_on_change_id = %s""",(output,alert_on_change_id))
 	# retrieve the records from the database
 	records = cursor.fetchall()
  
