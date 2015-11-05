@@ -91,7 +91,6 @@ class alert_on_change(ShutItModule):
 		# 5) update the db
 		# 6) send a mail
 		shutit.send_host_file('/tmp/db.py','context/db.py')
-		shutit.pause_point('python /tmp/db.py mail')
 		shutit.send('python /tmp/db.py')
 		shutit.send('pg_dump alert_on_change -a > context/DATA.sql')
 		shutit.send('pg_dump alert_on_change -s > context/SCHEMA.sql')
