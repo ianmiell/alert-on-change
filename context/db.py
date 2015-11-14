@@ -19,7 +19,7 @@ def main():
 	# records from being downloaded at once from the server.
 	cursor = conn.cursor('cursor_unique_name', cursor_factory=psycopg2.extras.DictCursor)
 	# execute our Query
-	cursor.execute("select alert_on_change_id, command, output, common_threshold, email_address from alert_on_change")
+	cursor.execute("select alert_on_change_id, command, output, common_threshold, email_address, description from alert_on_change")
 
 	# Because cursor objects are iterable we can just call 'for - in' on
 	# the cursor object and the cursor will automatically advance itself
@@ -30,6 +30,7 @@ def main():
 		output = row[2]
 		common_threshold = row[3]
 		email_address = row[4]
+		description = row[5]
 		new_output = commands.getoutput(command).decode('latin_1')
 		f = open("/tmp/new", "w")
 		f.write(new_output.encode('latin_1'))
@@ -41,7 +42,7 @@ def main():
 		cursor2 = conn.cursor()
 		if common_percent < int(common_threshold):
 			cursor2.execute("""update alert_on_change set output=%s, last_updated=now() where alert_on_change_id = %s""",(new_output.encode('latin_1'),alert_on_change_id))
-			commands.getoutput('''echo "Output of command has changed: ''' + command + '''" | mail -s "alert" --debug-level=100 ''' + email_address)
+			commands.getoutput('''echo "Output of command described as "''' + description + '''" has changed: ''' + command + '''" | mail -s "alert" --debug-level=100 ''' + email_address)
 		commands.getoutput('rm -f /tmp/new /tmp/old')
 	conn.commit()
 
