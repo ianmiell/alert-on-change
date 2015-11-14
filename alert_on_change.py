@@ -84,12 +84,6 @@ class alert_on_change(ShutItModule):
 		shutit.send('psql alert_on_change < context/SCHEMA.sql')
 		shutit.send('psql alert_on_change < context/DATA.sql')
 		shutit.send('''echo "alter user postgres password 'password'" | psql postgres''')
-		# 1) For each line
-		# 2) run the command and collect the output
-		# 3) compare with what's there.
-		# 4) If it's the same, do nothing, if it's different (dwdiff -s)
-		# 5) update the db
-		# 6) send a mail
 		shutit.send_host_file('/tmp/db.py','context/db.py')
 		shutit.send('python /tmp/db.py')
 		shutit.send('pg_dump alert_on_change -a > context/DATA.sql')
