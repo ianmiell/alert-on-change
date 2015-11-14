@@ -73,7 +73,8 @@ class alert_on_change(ShutItModule):
 		# shutit.fail(msg)                   - Fail the program and exit with status 1
 		#
 		shutit.install('curl git dwdiff html2text python-psycopg2 sudo')
-		shutit.send('groupadd -g 1000 alertonchange') shutit.send('useradd -g alertonchange -d /home/alertonchange -s /bin/bash -m alertonchange')
+		shutit.send('groupadd -g 1000 alertonchange')
+		shutit.send('useradd -g alertonchange -d /home/alertonchange -s /bin/bash -m alertonchange')
 		shutit.send('adduser alertonchange sudo')
 		shutit.send('echo "%sudo ALL=(ALL:ALL) ALL" > /etc/sudoers.d/sudo')
 		shutit.send('chmod 0440 /etc/sudoers.d/sudo')
