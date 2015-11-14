@@ -72,7 +72,12 @@ class alert_on_change(ShutItModule):
 		#                                    - Get input from user and return output
 		# shutit.fail(msg)                   - Fail the program and exit with status 1
 		#
-		shutit.install('curl git dwdiff html2text python-psycopg2')
+		shutit.install('curl git dwdiff html2text python-psycopg2 sudo')
+        shutit.send('groupadd -g 1000 alertonchange')
+        shutit.send('useradd -g alertonchange -d /home/alertonchange -s /bin/bash -m alertonchange')
+        shutit.send('adduser alertonchange sudo')
+        shutit.send('echo "%sudo ALL=(ALL:ALL) ALL" > /etc/sudoers.d/sudo')
+        shutit.send('chmod 0440 /etc/sudoers.d/sudo')
 		shutit.login('postgres')
 		shutit.send('curl https://raw.githubusercontent.com/docker-in-practice/docker-mailer/master/mail.sh > mail.sh')
 		shutit.send('chmod +x mail.sh')
@@ -84,8 +89,14 @@ class alert_on_change(ShutItModule):
 		shutit.send('psql alert_on_change < context/SCHEMA.sql')
 		shutit.send('psql alert_on_change < context/DATA.sql')
 		shutit.send('''echo "alter user postgres password 'password'" | psql postgres''')
+		shutit.send('createuser -s alertonchange')
+		shutit.send('''echo "alter user alertonchange with password 'postgres'" | psql postgres''')
+		shutit.logout()
+		shutit.login('alertonchange')
 		shutit.send_host_file('/tmp/db.py','context/db.py')
 		shutit.send('python /tmp/db.py')
+		shutit.logout()
+		shutit.login('postgres')
 		shutit.send('pg_dump alert_on_change -a > context/DATA.sql')
 		shutit.send('pg_dump alert_on_change -s > context/SCHEMA.sql')
 		shutit.send("git commit -am 'latest backup'",check_exit=False)
