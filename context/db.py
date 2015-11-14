@@ -2,7 +2,14 @@
 import psycopg2
 import psycopg2.extras
 import commands
- 
+
+# 1) For each line
+# 2) run the command and collect the output
+# 3) compare with what's there.
+# 4) If it's the same, do nothing, if it's different (dwdiff -s)
+# 5) update the db
+# 6) send a mail
+
 def main():
 	conn_string = "host='localhost' dbname='alert_on_change' user='postgres' password='password'"
 	# get a connection, if a connect cannot be made an exception will be raised here
@@ -13,7 +20,7 @@ def main():
 	cursor = conn.cursor('cursor_unique_name', cursor_factory=psycopg2.extras.DictCursor)
 	# execute our Query
 	cursor.execute("select alert_on_change_id, command, output, common_threshold, email_address from alert_on_change")
- 
+
 	# Because cursor objects are iterable we can just call 'for - in' on
 	# the cursor object and the cursor will automatically advance itself
 	# each iteration.
@@ -37,8 +44,8 @@ def main():
 			commands.getoutput('''echo "Output of command has changed: ''' + command + '''" | mail -s "alert" --debug-level=100 ''' + email_address)
 		commands.getoutput('rm -f /tmp/new /tmp/old')
 	conn.commit()
- 
- 
+
+
 if __name__ == "__main__":
 	main()
 

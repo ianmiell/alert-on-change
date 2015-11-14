@@ -50,6 +50,7 @@ SET default_with_oids = false;
 CREATE TABLE alert_on_change (
     alert_on_change_id integer DEFAULT nextval('alert_on_change_id_seq'::regclass) NOT NULL,
     command text NOT NULL,
+    description text NOT NULL DEFAULT '',
     output bytea NOT NULL,
     last_updated timestamp without time zone DEFAULT now() NOT NULL,
     common_threshold integer DEFAULT 100 NOT NULL,
