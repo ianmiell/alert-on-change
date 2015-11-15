@@ -31,6 +31,10 @@ def main():
 		common_threshold = row[3]
 		email_address = row[4]
 		description = row[5]
+		print 'command: ' + command
+		print 'common_threshold: ' + common_threshold
+		print 'email_address: ' + email_address
+		print 'description: ' + description
 		new_output = commands.getoutput(command).decode('latin_1')
 		f = open("/tmp/new", "w")
 		f.write(new_output.encode('latin_1'))
