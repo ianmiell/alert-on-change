@@ -97,6 +97,7 @@ class alert_on_change(ShutItModule):
 		shutit.send('python /tmp/db.py')
 		shutit.logout()
 		shutit.login('postgres')
+		shutit.send('cd alert-on-change')
 		shutit.send('pg_dump alert_on_change -a > context/DATA.sql')
 		shutit.send('pg_dump alert_on_change -s > context/SCHEMA.sql')
 		shutit.send("git commit -am 'latest backup'",check_exit=False)
