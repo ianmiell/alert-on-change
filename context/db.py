@@ -32,7 +32,7 @@ def main():
 		email_address = row[4]
 		description = row[5]
 		print 'command: ' + command
-		print 'common_threshold: ' + common_threshold
+		print 'common_threshold: ' + str(common_threshold)
 		print 'email_address: ' + email_address
 		print 'description: ' + description
 		new_output = commands.getoutput(command).decode('latin_1')
