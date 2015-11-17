@@ -18,4 +18,4 @@ do
 		;;
 	esac
 done
-${DOCKER} run -d --name ${CONTAINER_NAME} ${DOCKER_ARGS} ${IMAGE_NAME}  /bin/sh -c 'sleep infinity'
+${DOCKER} run -d --name ${CONTAINER_NAME} ${DOCKER_ARGS} ${IMAGE_NAME}  /bin/sh -c 'cron -f -L 8'

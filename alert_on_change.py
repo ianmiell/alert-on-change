@@ -72,7 +72,7 @@ class alert_on_change(ShutItModule):
 		#                                    - Get input from user and return output
 		# shutit.fail(msg)                   - Fail the program and exit with status 1
 		#
-		shutit.install('curl git dwdiff html2text python-psycopg2 sudo')
+		shutit.install('curl git dwdiff html2text python-psycopg2 sudo cron')
 		shutit.send('groupadd -g 1000 alertonchange')
 		shutit.send('useradd -g alertonchange -d /home/alertonchange -s /bin/bash -m alertonchange')
 		shutit.send('adduser alertonchange sudo')
@@ -95,12 +95,12 @@ class alert_on_change(ShutItModule):
 		shutit.login('alertonchange')
 		shutit.send_host_file('/tmp/db.py','context/db.py')
 		shutit.send('python /tmp/db.py')
+        shutit.send("""* * * * * python /tmp/db.py" | crontab -u alertonchange -""")
 		shutit.logout()
 		shutit.login('postgres')
 		shutit.send('cd alert-on-change')
-		shutit.send('pg_dump alert_on_change -a > context/DATA.sql')
-		shutit.send('pg_dump alert_on_change -s > context/SCHEMA.sql')
-		shutit.send("git commit -am 'latest backup'",check_exit=False)
+		shutit.send("""0 * * * * cd alert-on-change && pg_dump alert_on_change -a > context/DATA.sql && pg_dump alert_on_change -s > context/SCHEMA.sql && git commit -am 'latest backup' | crontab -u postgres""")
+		shutit.pause_point('autoexepect then git push origin master')
 		shutit.send('git push origin master',expect='sername')
 		shutit.send(shutit.cfg[self.module_id]['git_username'],expect='assword')
 		shutit.send(shutit.cfg[self.module_id]['git_password'])
