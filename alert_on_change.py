@@ -95,7 +95,7 @@ class alert_on_change(ShutItModule):
 		shutit.login('alertonchange')
 		shutit.send_host_file('/tmp/db.py','context/db.py')
 		shutit.send('python /tmp/db.py')
-        shutit.send("""* * * * * python /tmp/db.py" | crontab -u alertonchange -""")
+		shutit.send("""* * * * * python /tmp/db.py" | crontab -u alertonchange -""")
 		shutit.logout()
 		shutit.login('postgres')
 		shutit.send('cd alert-on-change')
