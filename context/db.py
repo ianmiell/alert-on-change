@@ -14,8 +14,8 @@ import argparse
 def main():
 
 	parser = argparse.ArgumentParser()
-	parser.add_argument('--test', help='Do not send emails', const=True, default=False, action='store_const')                 
-
+	parser.add_argument('--test', help='Do not send emails', const=True, default=False, action='store_const')
+	args = parser.parse_args(sys.argv[1:])
 	test = args.test
 
 	conn_string = "host='localhost' dbname='alert_on_change' user='postgres' password='password'"
