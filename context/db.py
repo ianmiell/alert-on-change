@@ -3,6 +3,7 @@ import psycopg2
 import psycopg2.extras
 import commands
 import argparse
+import sys
 
 # 1) For each line
 # 2) run the command and collect the output
