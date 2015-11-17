@@ -11,18 +11,18 @@ rm:false
 
 [repository]
 # COPY THESE TO YOUR ~/.shutit/config FILE AND FILL OUT ITEMS IN CAPS
-#user:YOUR_USERNAME
+user:imiell
 ## Fill these out in server- and username-specific config (also in this directory)
-#password:YOUR_REGISTRY_PASSWORD_OR_BLANK
+password:Dhazzard
 ## Fill these out in server- and username-specific config (also in this directory)
-#email:YOUR_REGISTRY_EMAIL_OR_BLANK
-#tag:no
-#push:yes
+email:ian.miell@gmail.com
+tag:yes
+push:yes
 #save:no
 #export:no
-##server:REMOVE_ME_FOR_DOCKER_INDEX
+server:
 ## tag suffix, defaults to "latest", eg registry/username/repository:latest.
 ## empty is also "latest"
-#tag_name:latest
+tag_name:latest
 #suffix_date:no
 #suffix_format:%s

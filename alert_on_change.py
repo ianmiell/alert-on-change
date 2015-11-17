@@ -123,6 +123,7 @@ class alert_on_change(ShutItModule):
 
 	def test(self, shutit):
 		# For test cycle part of the ShutIt build.
+		shutit.send('python /tmp/db.py --test')
 		return True
 
 	def finalize(self, shutit):

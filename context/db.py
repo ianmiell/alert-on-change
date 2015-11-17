@@ -2,6 +2,7 @@
 import psycopg2
 import psycopg2.extras
 import commands
+import argparse
 
 # 1) For each line
 # 2) run the command and collect the output
@@ -11,6 +12,12 @@ import commands
 # 6) send a mail
 
 def main():
+
+	parser = argparse.ArgumentParser()
+	parser.add_argument('--test', help='Do not send emails', const=True, default=False, action='store_const')                 
+
+	test = args.test
+
 	conn_string = "host='localhost' dbname='alert_on_change' user='postgres' password='password'"
 	# get a connection, if a connect cannot be made an exception will be raised here
 	conn = psycopg2.connect(conn_string)
@@ -44,10 +51,11 @@ def main():
 		f.close()
 		common_percent = int(commands.getoutput(r"""dwdiff -s /tmp/old /tmp/new 2>&1 > /dev/null | tail -1 | sed 's/.* \([0-9]\+\)..common.*/\1/' | sed 's/.*0 words.*/0/'"""))
 		cursor2 = conn.cursor()
-		if common_percent < int(common_threshold):
-			cursor2.execute("""update alert_on_change set output=%s, last_updated=now() where alert_on_change_id = %s""",(new_output.encode('latin_1'),alert_on_change_id))
-			commands.getoutput('''echo Output of command described as: ''' + description + ''' has changed. | mail -s "alert" --debug-level=100 ''' + email_address)
-		commands.getoutput('rm -f /tmp/new /tmp/old')
+		if not test:
+			if common_percent < int(common_threshold):
+				cursor2.execute("""update alert_on_change set output=%s, last_updated=now() where alert_on_change_id = %s""",(new_output.encode('latin_1'),alert_on_change_id))
+				commands.getoutput('''echo Output of command described as: ''' + description + ''' has changed. | mail -s "alert" --debug-level=100 ''' + email_address)
+			commands.getoutput('rm -f /tmp/new /tmp/old')
 	conn.commit()
 
 
