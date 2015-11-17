@@ -1,8 +1,8 @@
 #!/bin/bash
 # Example for running
 DOCKER=${DOCKER:-docker}
-IMAGE_NAME=alert_on_change
-CONTAINER_NAME=$IMAGE_NAME
+IMAGE_NAME=imiell/alert_on_change
+CONTAINER_NAME=alert_on_change
 DOCKER_ARGS=''
 while getopts "i:c:a:" opt
 do
@@ -18,4 +18,4 @@ do
 		;;
 	esac
 done
-${DOCKER} run -d --name ${CONTAINER_NAME} ${DOCKER_ARGS} ${IMAGE_NAME}  /bin/sh -c 'cron -f -L 8'
+${DOCKER} run -d --name ${CONTAINER_NAME} ${DOCKER_ARGS} ${IMAGE_NAME}  /bin/sh -c '/root/start_postgres.sh && cron -f -L 8'

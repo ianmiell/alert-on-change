@@ -56,7 +56,7 @@ def main():
 			if common_percent < int(common_threshold):
 				cursor2.execute("""update alert_on_change set output=%s, last_updated=now() where alert_on_change_id = %s""",(new_output.encode('latin_1'),alert_on_change_id))
 				commands.getoutput('''echo Output of command described as: ''' + description + ''' has changed. | mail -s "alert" --debug-level=100 ''' + email_address)
-			commands.getoutput('rm -f /tmp/new /tmp/old')
+		commands.getoutput('rm -f /tmp/new /tmp/old')
 	conn.commit()
 
 
