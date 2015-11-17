@@ -72,7 +72,7 @@ class alert_on_change(ShutItModule):
 		#                                    - Get input from user and return output
 		# shutit.fail(msg)                   - Fail the program and exit with status 1
 		#
-		shutit.install('curl git dwdiff html2text python-psycopg2 sudo cron expect')
+		shutit.install('curl git dwdiff html2text python-psycopg2 sudo cron expect wget')
 		shutit.send('groupadd -g 1000 alertonchange')
 		shutit.send('useradd -g alertonchange -d /home/alertonchange -s /bin/bash -m alertonchange')
 		shutit.send('adduser alertonchange sudo')
