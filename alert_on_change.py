@@ -100,7 +100,7 @@ class alert_on_change(ShutItModule):
 		shutit.login('postgres')
 		shutit.send('cd alert-on-change')
 		shutit.send(r"""echo "0 * * * * cd alert-on-change && pg_dump alert_on_change -a > context/DATA.sql && pg_dump alert_on_change -s > context/SCHEMA.sql && git commit -am 'latest backup' 
-10 * * * * /tmp/push.exp" | crontab -u postgres""")
+10 * * * * /tmp/push.exp" | crontab -u postgres -""")
 		shutit.send_file('/tmp/push.exp',r'''#!/usr/bin/env expect
 set timeout 100
 spawn bash
