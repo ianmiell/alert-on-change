@@ -99,8 +99,7 @@ class alert_on_change(ShutItModule):
 		shutit.logout()
 		shutit.login('postgres')
 		shutit.send('cd alert-on-change')
-		shutit.send(r"""echo "0 * * * * cd alert-on-change && pg_dump alert_on_change -a > context/DATA.sql && pg_dump alert_on_change -s > context/SCHEMA.sql && git commit -am 'latest backup' 
-10 * * * * /tmp/push.exp" | crontab -u postgres -""")
+		shutit.send(r"""echo "0 * * * * cd alert-on-change && pg_dump alert_on_change -a > context/DATA.sql && pg_dump alert_on_change -s > context/SCHEMA.sql && git commit -am 'latest backup' && /tmp/push.exp" | crontab -u postgres -""")
 		shutit.send_file('/tmp/push.exp',r'''#!/usr/bin/env expect
 set timeout 100
 spawn bash
@@ -108,7 +107,8 @@ send "git push origin master\n"
 expect -re {sername}
 send "''' + shutit.cfg[self.module_id]['git_username'] + r'''\n"
 expect -re {assword}
-send "''' + shutit.cfg[self.module_id]['git_password'] + r'''\n"''')
+send "''' + shutit.cfg[self.module_id]['git_password'] + r'''\n"
+expect -re {postgres}''')
 		shutit.send('chmod +x /tmp/push.exp')
 		shutit.logout()
 		return True
