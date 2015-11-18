@@ -55,8 +55,15 @@ def main():
 		if not test:
 			if common_percent < int(common_threshold):
 				cursor2.execute("""update alert_on_change set output=%s, last_updated=now() where alert_on_change_id = %s""",(new_output.encode('latin_1'),alert_on_change_id))
-				commands.getoutput('''echo Output of command described as: ''' + description + ''' has changed. | mail -s "alert" --debug-level=100 ''' + email_address)
-		commands.getoutput('rm -f /tmp/new /tmp/old')
+				commands.getoutput('''cat > /tmp/email_content << END
+Output of command described as: ''' + description + ''' has changed.
+
+$(head /tmp/new)
+
+$(head /tmp/old)
+END''')
+				commands.getoutput('''cat > /tmp/email_content | mail -s "alert" --debug-level=100 ''' + email_address)
+		commands.getoutput('rm -f /tmp/new /tmp/old /tmp/email_content')
 	conn.commit()
 
 
