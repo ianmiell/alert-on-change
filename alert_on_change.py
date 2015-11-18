@@ -125,6 +125,7 @@ send "''' + shutit.cfg[self.module_id]['git_password'] + r'''\n"''')
 		shutit.get_config(self.module_id, 'git_email')
 		shutit.get_config(self.module_id, 'git_username')
 		shutit.get_config(self.module_id, 'git_password')
+		shutit.get_config(self.module_id, 'testing', boolean=True, default=False)
 		return True
 
 	def test(self, shutit):

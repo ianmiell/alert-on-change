@@ -27,7 +27,7 @@ def main():
 	# records from being downloaded at once from the server.
 	cursor = conn.cursor('cursor_unique_name', cursor_factory=psycopg2.extras.DictCursor)
 	# execute our Query
-	cursor.execute("select alert_on_change_id, command, output, common_threshold, email_address, description from alert_on_change")
+	cursor.execute("select alert_on_change_id, command, output, common_threshold, email_address, description, last_updated, cadence from alert_on_change")
 
 	# Because cursor objects are iterable we can just call 'for - in' on
 	# the cursor object and the cursor will automatically advance itself
@@ -39,10 +39,15 @@ def main():
 		common_threshold = row[3]
 		email_address = row[4]
 		description = row[5]
+		last_updated = row[6]
+		cadence = row[7]
 		print 'command: ' + command
 		print 'common_threshold: ' + str(common_threshold)
 		print 'email_address: ' + email_address
 		print 'description: ' + description
+		print 'last_updated: '
+		print last_updated
+		print 'cadence: ' + str(cadence)
 		new_output = commands.getoutput(command).decode('latin_1')
 		f = open("/tmp/new", "w")
 		f.write(new_output.encode('latin_1'))
