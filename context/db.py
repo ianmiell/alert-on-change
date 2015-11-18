@@ -62,7 +62,7 @@ $(head /tmp/new)
 
 $(head /tmp/old)
 END''')
-				commands.getoutput('''cat > /tmp/email_content | mail -s "alert" --debug-level=100 ''' + email_address)
+				commands.getoutput('''cat /tmp/email_content | mail -s "alert" --debug-level=100 ''' + email_address)
 		commands.getoutput('rm -f /tmp/new /tmp/old /tmp/email_content')
 	conn.commit()
 
