@@ -94,6 +94,7 @@ class alert_on_change(ShutItModule):
 		shutit.logout()
 		shutit.login('alertonchange')
 		shutit.send_host_file('/tmp/db.py','context/db.py')
+		shutit.send('''sed -i 's/MAILGUNAPIUSER/''' + shutit.cfg[self.module_id]['mailgunapiuser'] + '''/g' /tmp/db.py''')
 		shutit.send("""echo "0 * * * * python /tmp/db.py" | crontab -u alertonchange -""")
 		shutit.logout()
 		shutit.login('postgres')
@@ -125,6 +126,7 @@ expect -re {postgres}''')
 		shutit.get_config(self.module_id, 'git_username')
 		shutit.get_config(self.module_id, 'git_password')
 		shutit.get_config(self.module_id, 'testing', boolean=True, default=False)
+		shutit.get_config(self.module_id, 'mailgunapiuser')
 		return True
 
 	def test(self, shutit):
