@@ -79,8 +79,6 @@ class alert_on_change(ShutItModule):
 		shutit.send('echo "%sudo ALL=(ALL:ALL) ALL" > /etc/sudoers.d/sudo')
 		shutit.send('chmod 0440 /etc/sudoers.d/sudo')
 		shutit.login('postgres')
-		shutit.send('curl https://raw.githubusercontent.com/docker-in-practice/docker-mailer/master/mail.sh > mail.sh')
-		shutit.send('chmod +x mail.sh')
 		shutit.send('git config --global user.email ' + shutit.cfg[self.module_id]['git_email'])
 		shutit.send('git config --global user.name ' + shutit.cfg[self.module_id]['git_name'])
 		shutit.send('git clone https://github.com/ianmiell/alert-on-change.git')
@@ -148,6 +146,6 @@ def module():
 		description='',
 		maintainer='',
 		delivery_methods=['docker'],
-		depends=['shutit.tk.gmailer.gmailer','shutit.tk.postgres.postgres']
+		depends=['shutit.tk.postgres.postgres']
 	)
 
