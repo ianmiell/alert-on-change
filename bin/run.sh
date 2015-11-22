@@ -18,4 +18,4 @@ do
 		;;
 	esac
 done
-${DOCKER} rm -f alert_on_change && ${DOCKER} run -d --name ${CONTAINER_NAME} ${DOCKER_ARGS} ${IMAGE_NAME}  /bin/sh -c '/root/start_postgres.sh && cron -f -L 8'
+(${DOCKER} rm -f alert_on_change || /bin/true) && ${DOCKER} run -d --name ${CONTAINER_NAME} ${DOCKER_ARGS} ${IMAGE_NAME}  /bin/sh -c '/root/start_postgres.sh && cron -f -L 8'
