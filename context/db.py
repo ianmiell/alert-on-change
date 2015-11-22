@@ -34,13 +34,13 @@ def main():
 	# each iteration.
 	for row in cursor:
 		alert_on_change_id = row[0]
-		command = row[1]
-		output = row[2]
-		common_threshold = row[3]
-		email_address = row[4]
-		description = row[5]
-		last_updated = row[6]
-		cadence = row[7]
+		command            = row[1]
+		output             = row[2]
+		common_threshold   = row[3]
+		email_address      = row[4]
+		description        = row[5]
+		last_updated       = row[6]
+		cadence            = row[7]
 		print 'command: ' + command
 		print 'common_threshold: ' + str(common_threshold)
 		print 'email_address: ' + email_address
@@ -49,16 +49,18 @@ def main():
 		print last_updated
 		print 'cadence: ' + str(cadence)
 		new_output = commands.getoutput(command).decode('latin_1')
+		print 'command run'
 		f = open("/tmp/new", "w")
 		f.write(new_output.encode('latin_1'))
 		f.close()
 		f = open("/tmp/old", "w")
 		f.write(str(output))
 		f.close()
+		print 'files written'
 		common_percent = int(commands.getoutput(r"""dwdiff -s /tmp/old /tmp/new 2>&1 > /dev/null | tail -1 | sed 's/.* \([0-9]\+\)..common.*/\1/' | sed 's/.*0 words.*/0/'"""))
-		cursor2 = conn.cursor()
 		if not test:
 			if common_percent < int(common_threshold):
+				cursor2 = conn.cursor()
 				cursor2.execute("""update alert_on_change set output=%s, last_updated=now() where alert_on_change_id = %s""",(new_output.encode('latin_1'),alert_on_change_id))
 				commands.getoutput('''echo 'Output of command described as: ''' + description + ''' has changed.' > /tmp/email_content''')
 				commands.getoutput('''curl -s --user "MAILGUNAPIUSER"  https://api.mailgun.net/v3/sandbox8bf98fb559c041779511cb4e546e5347.mailgun.org/messages -F from='Alert On Change <mailgun@sandbox8bf98fb559c041779511cb4e546e5347.mailgun.org>'  -F to=''' + email_address + ''' -F subject='Alert on change triggered!' -F text="$(cat /tmp/email_content)"''')
