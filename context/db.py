@@ -58,7 +58,7 @@ def main():
 		new_output = commands.getoutput("""/bin/bash -c '""" + command + """'""").decode('latin_1')
 		print '================================================================================='
 		print 'NEW OUTPUT:'
-		print new_output
+		print new_output.encode('latin_1')
 		print '================================================================================='
 		print 'command run'
 		f = open("new", "w")
