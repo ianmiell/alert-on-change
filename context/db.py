@@ -55,7 +55,11 @@ def main():
 		#if current time in seconds - time last updated in seconds < cadence, then skip
 		if False and int(time.time()) - int(last_updated) < cadence:
 			continue
-		new_output = commands.getoutput(command).decode('latin_1')
+		new_output = commands.getoutput("""/bin/bash -c '""" + command + """'""").decode('latin_1')
+		print '================================================================================='
+		print 'NEW OUTPUT:'
+		print new_output
+		print '================================================================================='
 		print 'command run'
 		f = open("new", "w")
 		f.write(new_output.encode('latin_1'))
@@ -70,9 +74,9 @@ def main():
 			if common_percent < int(common_threshold):
 				cursor2 = conn.cursor()
 				cursor2.execute("""update alert_on_change set output=%s, last_updated=now() where alert_on_change_id = %s""",(new_output.encode('latin_1'),alert_on_change_id))
-				commands.getoutput('''echo 'Output of command described as: ''' + description + ''' has changed.' > /tmp/email_content''')
-				commands.getoutput('''curl -s --user "MAILGUNAPIUSER"  https://api.mailgun.net/v3/sandbox8bf98fb559c041779511cb4e546e5347.mailgun.org/messages -F from='Alert On Change <mailgun@sandbox8bf98fb559c041779511cb4e546e5347.mailgun.org>'  -F to=''' + email_address + ''' -F subject='Alert on change triggered!' -F text="$(cat /tmp/email_content)"''')
-				#commands.getoutput('''cat /tmp/email_content | mail -s "alert" --debug-level=100 ''' + email_address)
+				commands.getoutput('''echo 'Output of command described as: ''' + description + ''' has changed.' > email_content''')
+				commands.getoutput('''curl -s --user "MAILGUNAPIUSER"  https://api.mailgun.net/v3/sandbox8bf98fb559c041779511cb4e546e5347.mailgun.org/messages -F from='Alert On Change <mailgun@sandbox8bf98fb559c041779511cb4e546e5347.mailgun.org>'  -F to=''' + email_address + ''' -F subject='Alert on change triggered!' -F text="$(cat email_content)"''')
+				#commands.getoutput('''cat email_content | mail -s "alert" --debug-level=100 ''' + email_address)
 				print commands.getoutput('''echo ================================================================================''')
 				print commands.getoutput('''cat email_content''')
 				print commands.getoutput('''echo ================================================================================''')
