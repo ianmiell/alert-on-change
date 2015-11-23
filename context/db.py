@@ -48,6 +48,10 @@ def main():
 		print 'last_updated: '
 		print last_updated
 		print 'cadence: ' + str(cadence)
+		print '================================================================================='
+		print 'OLD OUTPUT:'
+		print output
+		print '================================================================================='
 		#if current time in seconds - time last updated in seconds < cadence, then skip
 		if False and int(time.time()) - int(last_updated) < cadence:
 			continue
