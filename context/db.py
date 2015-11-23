@@ -48,16 +48,20 @@ def main():
 		print 'last_updated: '
 		print last_updated
 		print 'cadence: ' + str(cadence)
+		#if current time in seconds - time last updated in seconds < cadence, then skip
+		if False and int(time.time()) - int(last_updated) < cadence:
+			continue
 		new_output = commands.getoutput(command).decode('latin_1')
 		print 'command run'
-		f = open("/tmp/new", "w")
+		f = open("new", "w")
 		f.write(new_output.encode('latin_1'))
 		f.close()
-		f = open("/tmp/old", "w")
+		f = open("old", "w")
 		f.write(str(output))
 		f.close()
 		print 'files written'
-		common_percent = int(commands.getoutput(r"""dwdiff -s /tmp/old /tmp/new 2>&1 > /dev/null | tail -1 | sed 's/.* \([0-9]\+\)..common.*/\1/' | sed 's/.*0 words.*/0/'"""))
+		common_percent = int(commands.getoutput(r"""dwdiff -s old new 2>&1 > /dev/null | tail -1 | sed 's/.* \([0-9]\+\)..common.*/\1/' | sed 's/.*0 words.*/0/'"""))
+		cursor2 = conn.cursor()
 		if not test:
 			if common_percent < int(common_threshold):
 				cursor2 = conn.cursor()
@@ -65,15 +69,14 @@ def main():
 				commands.getoutput('''echo 'Output of command described as: ''' + description + ''' has changed.' > /tmp/email_content''')
 				commands.getoutput('''curl -s --user "MAILGUNAPIUSER"  https://api.mailgun.net/v3/sandbox8bf98fb559c041779511cb4e546e5347.mailgun.org/messages -F from='Alert On Change <mailgun@sandbox8bf98fb559c041779511cb4e546e5347.mailgun.org>'  -F to=''' + email_address + ''' -F subject='Alert on change triggered!' -F text="$(cat /tmp/email_content)"''')
 				#commands.getoutput('''cat /tmp/email_content | mail -s "alert" --debug-level=100 ''' + email_address)
-
 				print commands.getoutput('''echo ================================================================================''')
-				print commands.getoutput('''cat /tmp/email_content''')
+				print commands.getoutput('''cat email_content''')
 				print commands.getoutput('''echo ================================================================================''')
-				print commands.getoutput('''cat /tmp/old''')
+				print commands.getoutput('''cat old''')
 				print commands.getoutput('''echo ================================================================================''')
-				print commands.getoutput('''cat /tmp/new''')
+				print commands.getoutput('''cat new''')
 				print commands.getoutput('''echo ================================================================================''')
-		commands.getoutput('rm -f /tmp/new /tmp/old /tmp/email_content')
+		commands.getoutput('rm -f new old email_content')
 	conn.commit()
 
 
