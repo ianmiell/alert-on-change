@@ -54,6 +54,7 @@ def main():
 		print '================================================================================='
 		#if current time in seconds - time last updated in seconds < cadence, then skip
 		if False and int(time.time()) - int(last_updated) < cadence:
+			print 'Cadence not breached, continuing'
 			continue
 		new_output = commands.getoutput("""/bin/bash -c '""" + command + """'""").decode('latin_1')
 		print '================================================================================='
