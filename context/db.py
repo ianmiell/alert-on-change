@@ -80,12 +80,11 @@ def main():
 
 OLD:
 
-''' + output + '''
+''' + str(output) + '''
 
 NEW:
 
 ''' + new_output)
-				commands.getoutput('''curl -s --user "MAILGUNAPIUSER"  https://api.mailgun.net/v3/sandbox8bf98fb559c041779511cb4e546e5347.mailgun.org/messages -F from='Alert On Change <mailgun@sandbox8bf98fb559c041779511cb4e546e5347.mailgun.org>'  -F to=''' + email_address + ''' -F subject='Alert on change triggered!' -F text="Output of command described as: ''' + description + ''' has changed."''')
 		commands.getoutput('rm -f new old')
 	conn.commit()
 
