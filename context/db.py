@@ -76,7 +76,9 @@ def main():
 				cursor2 = conn.cursor()
 				cursor2.execute("""update alert_on_change set output=%s, last_updated=now() where alert_on_change_id = %s""",(new_output.encode('latin_1'),alert_on_change_id))
 				commands.getoutput('''echo 'Output of command described as: ''' + description + ''' has changed.' > email_content''')
-				commands.getoutput('''curl -s --user "MAILGUNAPIUSER"  https://api.mailgun.net/v3/sandbox8bf98fb559c041779511cb4e546e5347.mailgun.org/messages -F from='Alert On Change <mailgun@sandbox8bf98fb559c041779511cb4e546e5347.mailgun.org>'  -F to=''' + email_address + ''' -F subject='Alert on change triggered!' -F text="$(cat email_content)" -F html="<html><head></head><body>$(cat email_content)</body></html>"''')
+				mailgun.Mailgun.init("MAILGUNAPIUSER")
+				mailgun.MailgunMessage.send_txt("mailgun@sandbox8bf98fb559c041779511cb4e546e5347.mailgun.org","ian.miell@gmail.com",'Alert on change triggered!','message')
+				commands.getoutput('''curl -s --user "MAILGUNAPIUSER"  https://api.mailgun.net/v3/sandbox8bf98fb559c041779511cb4e546e5347.mailgun.org/messages -F from='Alert On Change <mailgun@sandbox8bf98fb559c041779511cb4e546e5347.mailgun.org>'  -F to=''' + email_address + ''' -F subject='Alert on change triggered!' -F text="Output of command described as: ''' + description + ''' has changed."''')
 				#commands.getoutput('''cat email_content | mail -s "alert" --debug-level=100 ''' + email_address)
 				print commands.getoutput('''echo ================================================================================''')
 				print commands.getoutput('''cat email_content''')
@@ -86,32 +88,6 @@ def main():
 				print commands.getoutput('''cat new''')
 				print commands.getoutput('''echo ================================================================================''')
 		commands.getoutput('rm -f new old email_content')
-# MAILGUN
-#  sudo apt-get install python-dev
-#  pip install simplejson
-#  pip install mailgun
-
-# 
-#     |  send_raw(cls, sender, recipients, mime_body, servername='') from __builtin__.classobj
-#     |              Sends a raw MIME message. Accepts either Unicode or UTF-8 encoded strings
-#     |      
-#     |              >>> Mailgun.init("api-key-dirty-secret")
-#     |              >>> raw_mime = "X-Priority: 1 (Highest)
-#     |      "                "Content-Type: text/plain;charset=utf-8
-#     |      "                "Subject: Hello!
-#     |      "                "
-#     |      "                "I construct MIME message and send it!"
-#     |              >>> MailgunMessage.send_raw("me@myhost.com", "you@yourhost.com", raw_mime)
-#     |  
-#     |  send_txt(cls, sender, recipients, subject, text, servername='', options=None) from __builtin__.classobj
-#     |              Sends a plain-text message. Accepts either Unicode or UTF-8 encoded strings
-#     |      
-#     |              >>> MailgunMessage.send_text("me@myhost.com",
-#     |                  "you@yourhost.com",
-#     |                  "Hello",
-#     |                  "Hi!
-#     |      I am sending the message using Mailgun")
-
 	conn.commit()
 
 
