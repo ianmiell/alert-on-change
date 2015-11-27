@@ -4,6 +4,7 @@ import psycopg2.extras
 import commands
 import argparse
 import sys
+import mailgun
 
 # 1) For each line
 # 2) run the command and collect the output
@@ -71,8 +72,7 @@ def main():
 		print 'files written'
 		common_percent = int(commands.getoutput(r"""dwdiff -s old new 2>&1 > /dev/null | tail -1 | sed 's/.* \([0-9]\+\)..common.*/\1/' | sed 's/.*0 words.*/0/'"""))
 		cursor2 = conn.cursor()
-		if not test:
-			if common_percent < int(common_threshold):
+		if not test and common_percent < int(common_threshold):
 				cursor2 = conn.cursor()
 				cursor2.execute("""update alert_on_change set output=%s, last_updated=now() where alert_on_change_id = %s""",(new_output.encode('latin_1'),alert_on_change_id))
 				commands.getoutput('''echo 'Output of command described as: ''' + description + ''' has changed.' > email_content''')
@@ -86,6 +86,32 @@ def main():
 				print commands.getoutput('''cat new''')
 				print commands.getoutput('''echo ================================================================================''')
 		commands.getoutput('rm -f new old email_content')
+# MAILGUN
+#  sudo apt-get install python-dev
+#  pip install simplejson
+#  pip install mailgun
+
+# 
+#     |  send_raw(cls, sender, recipients, mime_body, servername='') from __builtin__.classobj
+#     |              Sends a raw MIME message. Accepts either Unicode or UTF-8 encoded strings
+#     |      
+#     |              >>> Mailgun.init("api-key-dirty-secret")
+#     |              >>> raw_mime = "X-Priority: 1 (Highest)
+#     |      "                "Content-Type: text/plain;charset=utf-8
+#     |      "                "Subject: Hello!
+#     |      "                "
+#     |      "                "I construct MIME message and send it!"
+#     |              >>> MailgunMessage.send_raw("me@myhost.com", "you@yourhost.com", raw_mime)
+#     |  
+#     |  send_txt(cls, sender, recipients, subject, text, servername='', options=None) from __builtin__.classobj
+#     |              Sends a plain-text message. Accepts either Unicode or UTF-8 encoded strings
+#     |      
+#     |              >>> MailgunMessage.send_text("me@myhost.com",
+#     |                  "you@yourhost.com",
+#     |                  "Hello",
+#     |                  "Hi!
+#     |      I am sending the message using Mailgun")
+
 	conn.commit()
 
 
