@@ -75,19 +75,18 @@ def main():
 		if not test and common_percent < int(common_threshold):
 				cursor2 = conn.cursor()
 				cursor2.execute("""update alert_on_change set output=%s, last_updated=now() where alert_on_change_id = %s""",(new_output.encode('latin_1'),alert_on_change_id))
-				commands.getoutput('''echo 'Output of command described as: ''' + description + ''' has changed.' > email_content''')
 				mailgun.Mailgun.init("MAILGUNAPIUSER")
-				mailgun.MailgunMessage.send_txt("mailgun@sandbox8bf98fb559c041779511cb4e546e5347.mailgun.org","ian.miell@gmail.com",'Alert on change triggered!','message')
+				mailgun.MailgunMessage.send_txt("mailgun@sandbox8bf98fb559c041779511cb4e546e5347.mailgun.org","ian.miell@gmail.com",'Alert on change triggered!','''Output of command described as: ''' + description + ''' has changed.
+
+OLD:
+
+''' + output + '''
+
+NEW:
+
+''' + new_output)
 				commands.getoutput('''curl -s --user "MAILGUNAPIUSER"  https://api.mailgun.net/v3/sandbox8bf98fb559c041779511cb4e546e5347.mailgun.org/messages -F from='Alert On Change <mailgun@sandbox8bf98fb559c041779511cb4e546e5347.mailgun.org>'  -F to=''' + email_address + ''' -F subject='Alert on change triggered!' -F text="Output of command described as: ''' + description + ''' has changed."''')
-				#commands.getoutput('''cat email_content | mail -s "alert" --debug-level=100 ''' + email_address)
-				print commands.getoutput('''echo ================================================================================''')
-				print commands.getoutput('''cat email_content''')
-				print commands.getoutput('''echo ================================================================================''')
-				print commands.getoutput('''cat old''')
-				print commands.getoutput('''echo ================================================================================''')
-				print commands.getoutput('''cat new''')
-				print commands.getoutput('''echo ================================================================================''')
-		commands.getoutput('rm -f new old email_content')
+		commands.getoutput('rm -f new old')
 	conn.commit()
 
 
