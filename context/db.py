@@ -71,6 +71,7 @@ def main():
 		f.close()
 		print 'files written'
 		common_percent = int(commands.getoutput(r"""dwdiff -s old new 2>&1 > /dev/null | tail -1 | sed 's/.* \([0-9]\+\)..common.*/\1/' | sed 's/.*0 words.*/0/'"""))
+		diff = commands.getoutput(r"""diff old new"""))
 		cursor2 = conn.cursor()
 		if not test and common_percent < int(common_threshold):
 				cursor2 = conn.cursor()
@@ -78,13 +79,13 @@ def main():
 				mailgun.Mailgun.init("MAILGUNAPIUSER")
 				mailgun.MailgunMessage.send_txt("mailgun@sandbox8bf98fb559c041779511cb4e546e5347.mailgun.org","ian.miell@gmail.com",'Alert on change triggered!','''Output of command described as: ''' + description + ''' has changed.
 
-OLD:
+COMMAND:
 
-''' + str(output) + '''
+''' + command + '''
 
-NEW:
+DIFF: 
 
-''' + new_output)
+''' + diff)
 		commands.getoutput('rm -f new old')
 	conn.commit()
 

@@ -95,11 +95,11 @@ class alert_on_change(ShutItModule):
 		shutit.login('alertonchange')
 		shutit.send_host_file('/tmp/db.py','context/db.py')
 		shutit.send('''sed -i 's/MAILGUNAPIUSER/''' + shutit.cfg[self.module_id]['mailgunapiuser'] + '''/g' /tmp/db.py''')
-		shutit.send("""echo "0,10,20,30,40,50 * * * * python /tmp/db.py" | crontab -u alertonchange -""")
+		shutit.send("""echo "* * * * * python /tmp/db.py" | crontab -u alertonchange -""")
 		shutit.logout()
 		shutit.login('postgres')
 		shutit.send('cd alert-on-change')
-		shutit.send(r"""echo "5,15,25,35,45,55 * * * * cd alert-on-change && pg_dump alert_on_change -a > context/DATA.sql && pg_dump alert_on_change -s > context/SCHEMA.sql && git commit -am 'latest backup' && /tmp/push.exp" | crontab -u postgres -""")
+		shutit.send(r"""echo "5,25,45 * * * * cd alert-on-change && pg_dump alert_on_change -a > context/DATA.sql && pg_dump alert_on_change -s > context/SCHEMA.sql && git commit -am 'latest backup' && /tmp/push.exp" | crontab -u postgres -""")
 		shutit.send_file('/tmp/push.exp',r'''#!/usr/bin/env expect
 set timeout 100
 spawn bash
