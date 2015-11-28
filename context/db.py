@@ -77,7 +77,7 @@ def main():
 				cursor2 = conn.cursor()
 				cursor2.execute("""update alert_on_change set output=%s, last_updated=now() where alert_on_change_id = %s""",(new_output.encode('latin_1'),alert_on_change_id))
 				mailgun.Mailgun.init("MAILGUNAPIUSER")
-				mailgun.MailgunMessage.send_txt("mailgun@sandbox8bf98fb559c041779511cb4e546e5347.mailgun.org","ian.miell@gmail.com",'Alert on change triggered!','''Output of command described as: ''' + description + ''' has changed.
+				mailgun.MailgunMessage.send_txt("MAILGUNADDRESS",email_address,'Alert on change triggered!','''Output of command described as: ''' + description + ''' has changed.
 
 COMMAND:
 
