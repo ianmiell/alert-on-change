@@ -71,7 +71,7 @@ def main():
 		f.close()
 		print 'files written'
 		common_percent = int(commands.getoutput(r"""dwdiff -s old new 2>&1 > /dev/null | tail -1 | sed 's/.* \([0-9]\+\)..common.*/\1/' | sed 's/.*0 words.*/0/'"""))
-		diff = commands.getoutput(r"""diff old new"""))
+		diff = commands.getoutput(r"""diff old new""")
 		cursor2 = conn.cursor()
 		if not test and common_percent < int(common_threshold):
 				cursor2 = conn.cursor()
