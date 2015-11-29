@@ -45,7 +45,7 @@ def insert_row(insert_dict):
 def _get_db_conn():	
 	conn_string = "host='localhost' dbname='alert_on_change' user='postgres' password='password'"
 	# get a connection, if a connect cannot be made an exception will be raised here
-	conn = psycopg2.connect(conn_string)
+	return psycopg2.connect(conn_string)
 
 def send(test=False):
 	conn = _get_db_conn()
