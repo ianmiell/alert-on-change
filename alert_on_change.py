@@ -95,7 +95,7 @@ class alert_on_change(ShutItModule):
 		shutit.login('alertonchange')
 		shutit.send_host_file('/tmp/db.py','context/db.py')
 		shutit.send('''sed -i 's/MAILGUNAPIUSER/''' + shutit.cfg[self.module_id]['mailgunapiuser'] + '''/g' /tmp/db.py''')
-		shutit.send('''sed -i 's/MAILGUNADDRESS/''' + shutit.cfg[self.module_id]['mailgunapiuser'] + '''/g' /tmp/db.py''')
+		shutit.send('''sed -i 's/MAILGUNADDRESS/''' + shutit.cfg[self.module_id]['mailgunaddress'] + '''/g' /tmp/db.py''')
 		shutit.send("""echo "* * * * * python /tmp/db.py" | crontab -u alertonchange -""")
 		shutit.logout()
 		shutit.login('postgres')
