@@ -21,10 +21,9 @@ def main():
 	parser.add_argument('--insert_alert', help='Insert alert as a dictionary, eg ', nargs=1, default='')
 	args = parser.parse_args(sys.argv[1:])
 	test = args.test
-	insert_alert = args.test
+	insert_alert = args.insert_alert
 	if insert_alert != '':
 		mail_run=False
-	print str(insert_alert)
 	if mail_run:
 		send(test=test)
 	elif insert_alert != '':
