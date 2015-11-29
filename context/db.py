@@ -16,9 +16,34 @@ import mailgun
 def main():
 
 	parser = argparse.ArgumentParser()
+	mail_run=True
 	parser.add_argument('--test', help='Do not send emails', const=True, default=False, action='store_const')
+	parser.add_argument('--insert_alert', help='Insert alert as a dictionary, eg ', nargs=1, default='')
 	args = parser.parse_args(sys.argv[1:])
 	test = args.test
+	insert_alert = args.test
+	if insert_alert != '':
+		mail_run=False
+	
+	if mail_run:
+		send(test=test)
+	elif insert_alert != '':
+		import json
+		insert_dict = json.loads(insert_alert)
+		insert_row(insert_dict)
+	
+def insert_row(insert_dict):
+	command           = insert_dict['command']
+	email_address     = insert_dict['email_address']
+	description       = insert_dict['description']
+	cadence           = insert_dict['cadence']
+	common_threshold  = insert_dict['common_threshold']
+	ignore_output     = insert_dict['ignore_output']
+	cursor = conn.cursor('cursor_unique_name', cursor_factory=psycopg2.extras.DictCursor)
+	cursor.execute("insert into alert_on_change(command, common_threshold, email_address, description, cadence, ignore_output) values(%s,%s,%s,%s,%s,%s)",(command,common_threshold,email_address,description,cadence,ignore_output.encode('latin-1')))
+	
+
+def send(test=False):
 
 	conn_string = "host='localhost' dbname='alert_on_change' user='postgres' password='password'"
 	# get a connection, if a connect cannot be made an exception will be raised here
