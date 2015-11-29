@@ -37,15 +37,17 @@ def insert_row(insert_dict):
 	cadence           = insert_dict['cadence']
 	common_threshold  = insert_dict['common_threshold']
 	ignore_output     = insert_dict['ignore_output']
+	conn = _get_db_conn()
 	cursor = conn.cursor('cursor_unique_name', cursor_factory=psycopg2.extras.DictCursor)
 	cursor.execute("insert into alert_on_change(command, common_threshold, email_address, description, cadence, ignore_output) values(%s,%s,%s,%s,%s,%s)",(command,common_threshold,email_address,description,cadence,ignore_output.encode('latin-1')))
-	
 
-def send(test=False):
-
+def _get_db_conn():	
 	conn_string = "host='localhost' dbname='alert_on_change' user='postgres' password='password'"
 	# get a connection, if a connect cannot be made an exception will be raised here
 	conn = psycopg2.connect(conn_string)
+
+def send(test=False):
+	conn = _get_db_conn()
 	# HERE IS THE IMPORTANT PART, by specifying a name for the cursor
 	# psycopg2 creates a server-side cursor, which prevents all of the
 	# records from being downloaded at once from the server.
