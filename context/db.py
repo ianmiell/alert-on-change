@@ -17,7 +17,7 @@ def main():
 	parser = argparse.ArgumentParser()
 	mail_run=True
 	parser.add_argument('--test', help='Do not send emails', const=True, default=False, action='store_const')
-	parser.add_argument('--insert_alert', help="""Insert alert as a dictionary, eg '{"command":"","email_address":"","description":"","cadence":"","common_threshold":"","ignore_output":""}'""",default='')
+	parser.add_argument('--insert_alert', help="""Insert alert as a dictionary, eg --insert_alert '{"command":"echo $[$RANDOM % 2]","email_address":"ian.miell@gmail.com","description":"output 1","cadence":"1","common_threshold":"100","ignore_output":"0"}'""",default='')
 	args = parser.parse_args(sys.argv[1:])
 	test = args.test
 	insert_alert = args.insert_alert
