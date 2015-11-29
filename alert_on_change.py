@@ -93,15 +93,15 @@ class alert_on_change(ShutItModule):
 		shutit.send('''echo "alter user alertonchange with password 'postgres'" | psql postgres''')
 		shutit.logout()
 		shutit.login('alertonchange')
-		shutit.send_host_file('/tmp/db.py','context/db.py')
-		shutit.send('''sed -i 's/MAILGUNAPIUSER/''' + shutit.cfg[self.module_id]['mailgunapiuser'] + '''/g' /tmp/db.py''')
-		shutit.send('''sed -i 's/MAILGUNADDRESS/''' + shutit.cfg[self.module_id]['mailgunaddress'] + '''/g' /tmp/db.py''')
-		shutit.send("""echo "* * * * * python /tmp/db.py" | crontab -u alertonchange -""")
+		shutit.send_host_file('/home/alertonchange/db.py','context/db.py')
+		shutit.send('''sed -i 's/MAILGUNAPIUSER/''' + shutit.cfg[self.module_id]['mailgunapiuser'] + '''/g' /home/alertonchange/db.py''')
+		shutit.send('''sed -i 's/MAILGUNADDRESS/''' + shutit.cfg[self.module_id]['mailgunaddress'] + '''/g' /home/alertonchange/db.py''')
+		shutit.send("""echo "* * * * * python /home/alertonchange/db.py" | crontab -u alertonchange -""")
 		shutit.logout()
 		shutit.login('postgres')
 		shutit.send('cd alert-on-change')
-		shutit.send(r"""echo "5,25,45 * * * * cd alert-on-change && pg_dump alert_on_change -a > context/DATA.sql && pg_dump alert_on_change -s > context/SCHEMA.sql && git commit -am 'latest backup' && /tmp/push.exp" | crontab -u postgres -""")
-		shutit.send_file('/tmp/push.exp',r'''#!/usr/bin/env expect
+		shutit.send(r"""echo "5,25,45 * * * * cd alert-on-change && pg_dump alert_on_change -a > context/DATA.sql && pg_dump alert_on_change -s > context/SCHEMA.sql && git commit -am 'latest backup' && /home/alertonchange/push.exp" | crontab -u postgres -""")
+		shutit.send_file('/home/alertonchange/push.exp',r'''#!/usr/bin/env expect
 set timeout 100
 spawn bash
 send "git push origin ''' + shutit.cfg[self.module_id]['git_branch'] + r'''\n"
@@ -110,7 +110,7 @@ send "''' + shutit.cfg[self.module_id]['git_username'] + r'''\n"
 expect -re {assword}
 send "''' + shutit.cfg[self.module_id]['git_password'] + r'''\n"
 expect -re {postgres}''')
-		shutit.send('chmod +x /tmp/push.exp')
+		shutit.send('chmod +x /home/alertonchange/push.exp')
 		shutit.logout()
 		return True
 
@@ -134,7 +134,7 @@ expect -re {postgres}''')
 
 	def test(self, shutit):
 		# For test cycle part of the ShutIt build.
-		shutit.send('python /tmp/db.py --test')
+		shutit.send('python /home/alertonchange/db.py --test')
 		return True
 
 	def finalize(self, shutit):
