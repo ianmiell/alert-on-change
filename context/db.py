@@ -24,7 +24,7 @@ def main():
 	insert_alert = args.test
 	if insert_alert != '':
 		mail_run=False
-	
+	print str(insert_alert)
 	if mail_run:
 		send(test=test)
 	elif insert_alert != '':
