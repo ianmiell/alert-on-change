@@ -28,7 +28,7 @@ def main():
 	# records from being downloaded at once from the server.
 	cursor = conn.cursor('cursor_unique_name', cursor_factory=psycopg2.extras.DictCursor)
 	# execute our Query
-	cursor.execute("select alert_on_change_id, command, output, common_threshold, email_address, description, last_updated, cadence from alert_on_change")
+	cursor.execute("select alert_on_change_id, command, output, common_threshold, email_address, description, last_updated, cadence, ignore_output from alert_on_change")
 
 	# Because cursor objects are iterable we can just call 'for - in' on
 	# the cursor object and the cursor will automatically advance itself
@@ -42,6 +42,7 @@ def main():
 		description        = row[5]
 		last_updated       = row[6]
 		cadence            = row[7]
+		ignore_output      = row[8]
 		print 'command: ' + command
 		print 'common_threshold: ' + str(common_threshold)
 		print 'email_address: ' + email_address
@@ -52,6 +53,9 @@ def main():
 		print '================================================================================='
 		print 'OLD OUTPUT:'
 		print output
+		print 'IGNORE OUTPUT:'
+		print str(ignore_output)
+		print 'cadence: ' + str(cadence)
 		print '================================================================================='
 		#if current time in seconds - time last updated in seconds < cadence, then skip
 		if False and int(time.time()) - int(last_updated) < cadence:
@@ -63,6 +67,9 @@ def main():
 		print new_output.encode('latin_1')
 		print '================================================================================='
 		print 'command run'
+		if new_output == ignore_output:
+			print 'Ignore output matched, continuing'
+			continue
 		f = open("new", "w")
 		f.write(new_output.encode('latin_1'))
 		f.close()

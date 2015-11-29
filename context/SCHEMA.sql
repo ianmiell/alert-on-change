@@ -55,6 +55,7 @@ CREATE TABLE alert_on_change (
     last_updated timestamp without time zone DEFAULT now() NOT NULL,
     common_threshold integer DEFAULT 100 NOT NULL,
     email_address text NOT NULL,
+    ignore_output bytea DEFAULT NULL,
     cadence integer DEFAULT 3600 NOT NULL
 );
 
