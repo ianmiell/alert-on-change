@@ -104,7 +104,7 @@ class alert_on_change(ShutItModule):
 		shutit.send_file('/tmp/push.exp',r'''#!/usr/bin/env expect
 set timeout 100
 spawn bash
-send "git push origin master\n"
+send "git push origin ''' + shutit.cfg[self.module_id]['git_branch'] + r'''\n"
 expect -re {sername}
 send "''' + shutit.cfg[self.module_id]['git_username'] + r'''\n"
 expect -re {assword}
