@@ -14,14 +14,13 @@ import mailgun
 # 6) send a mail
 
 def main():
-
 	parser = argparse.ArgumentParser()
 	mail_run=True
 	parser.add_argument('--test', help='Do not send emails', const=True, default=False, action='store_const')
-	parser.add_argument('--insert_alert', help='Insert alert as a dictionary, eg ', nargs=1, default='')
+	parser.add_argument('--insert_alert', help="""Insert alert as a dictionary, eg '{"command":"","email_address":"","description":"","cadence":"","common_threshold":"","ignore_output":""}'"""
 	args = parser.parse_args(sys.argv[1:])
 	test = args.test
-	insert_alert = args.insert_alert
+	insert_alert = args.insert_alert[0]
 	if insert_alert != '':
 		mail_run=False
 	if mail_run:
