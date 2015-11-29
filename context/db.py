@@ -17,11 +17,12 @@ def main():
 	parser = argparse.ArgumentParser()
 	mail_run=True
 	parser.add_argument('--test', help='Do not send emails', const=True, default=False, action='store_const')
-	parser.add_argument('--insert_alert', help="""Insert alert as a dictionary, eg '{"command":"","email_address":"","description":"","cadence":"","common_threshold":"","ignore_output":""}'""")
+	parser.add_argument('--insert_alert', help="""Insert alert as a dictionary, eg '{"command":"","email_address":"","description":"","cadence":"","common_threshold":"","ignore_output":""}'""",default='')
 	args = parser.parse_args(sys.argv[1:])
 	test = args.test
-	insert_alert = args.insert_alert[0]
+	insert_alert = args.insert_alert
 	if insert_alert != '':
+		insert_alert = insert_alert[0]
 		mail_run=False
 	if mail_run:
 		send(test=test)
@@ -44,7 +45,7 @@ def insert_row(insert_dict):
 def _get_db_conn():	
 	conn_string = "host='localhost' dbname='alert_on_change' user='postgres' password='password'"
 	# get a connection, if a connect cannot be made an exception will be raised here
-	conn = psycopg2.connect(conn_string)
+	return psycopg2.connect(conn_string)
 
 def send(test=False):
 	conn = _get_db_conn()
@@ -53,7 +54,7 @@ def send(test=False):
 	# records from being downloaded at once from the server.
 	cursor = conn.cursor('cursor_unique_name', cursor_factory=psycopg2.extras.DictCursor)
 	# execute our Query
-	cursor.execute("select alert_on_change_id, command, output, common_threshold, email_address, description, last_updated, cadence, ignore_output from alert_on_change")
+	cursor.execute("select alert_on_change_id, command, output, common_threshold, email_address, description, last_updated, cadence, ignore_output, ok_return_codes from alert_on_change")
 
 	# Because cursor objects are iterable we can just call 'for - in' on
 	# the cursor object and the cursor will automatically advance itself
@@ -68,6 +69,7 @@ def send(test=False):
 		last_updated       = row[6]
 		cadence            = row[7]
 		ignore_output      = row[8]
+		ok_return_codes    = row[9]
 		print 'command: ' + command
 		print 'common_threshold: ' + str(common_threshold)
 		print 'email_address: ' + email_address
@@ -86,7 +88,12 @@ def send(test=False):
 		if False and int(time.time()) - int(last_updated) < cadence:
 			print 'Cadence not breached, continuing'
 			continue
-		new_output = commands.getoutput("""/bin/bash -c '""" + command + """'""").decode('latin_1')
+		(status,new_output) = commands.getstatusoutput("""/bin/bash -c '""" + command + """'""")
+		new_output = new_output.decode('latin_1')
+		if status not in ok_return_codes:
+			print 'Status not returned ok! : ' + str(status)
+			print 'Output: ' + new_output
+			continue
 		print '================================================================================='
 		print 'NEW OUTPUT:'
 		print new_output.encode('latin_1')
@@ -102,8 +109,9 @@ def send(test=False):
 		f.write(str(output))
 		f.close()
 		print 'files written'
-		common_percent = int(commands.getoutput(r"""dwdiff -s old new 2>&1 > /dev/null | tail -1 | sed 's/.* \([0-9]\+\)..common.*/\1/' | sed 's/.*0 words.*/0/'"""))
-		diff = commands.getoutput(r"""diff old new""")
+		(status,common_percent) = commands.getstatusoutput(r"""dwdiff -s old new 2>&1 > /dev/null | tail -1 | sed 's/.* \([0-9]\+\)..common.*/\1/' | sed 's/.*0 words.*/0/'""")
+		common_percent = int(common_percent)
+		(status,diff) = commands.getstatusoutput(r"""diff old new""")
 		cursor2 = conn.cursor()
 		if not test and common_percent < int(common_threshold):
 				cursor2 = conn.cursor()
