@@ -54,7 +54,7 @@ def send(test=False):
 	# records from being downloaded at once from the server.
 	cursor = conn.cursor('cursor_unique_name', cursor_factory=psycopg2.extras.DictCursor)
 	# execute our Query
-	cursor.execute("select alert_on_change_id, command, output, common_threshold, email_address, description, last_updated, cadence, ignore_output from alert_on_change")
+	cursor.execute("select alert_on_change_id, command, output, common_threshold, email_address, description, last_updated, cadence, ignore_output, ok_return_codes from alert_on_change")
 
 	# Because cursor objects are iterable we can just call 'for - in' on
 	# the cursor object and the cursor will automatically advance itself
@@ -69,6 +69,7 @@ def send(test=False):
 		last_updated       = row[6]
 		cadence            = row[7]
 		ignore_output      = row[8]
+		ok_return_codes    = row[9]
 		print 'command: ' + command
 		print 'common_threshold: ' + str(common_threshold)
 		print 'email_address: ' + email_address
@@ -89,6 +90,10 @@ def send(test=False):
 			continue
 		(status,new_output) = commands.getstatusoutput("""/bin/bash -c '""" + command + """'""")
 		new_output = new_output.decode('latin_1')
+		if status not in ok_return_codes:
+			print 'Status not returned ok! : ' + str(status)
+			print 'Output: ' + new_output
+			continue
 		print '================================================================================='
 		print 'NEW OUTPUT:'
 		print new_output.encode('latin_1')
