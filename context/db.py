@@ -20,8 +20,9 @@ def main():
 	parser.add_argument('--insert_alert', help="""Insert alert as a dictionary, eg '{"command":"","email_address":"","description":"","cadence":"","common_threshold":"","ignore_output":""}'""")
 	args = parser.parse_args(sys.argv[1:])
 	test = args.test
-	insert_alert = args.insert_alert[0]
+	insert_alert = args.insert_alert
 	if insert_alert != '':
+		insert_alert = insert_alert[0]
 		mail_run=False
 	if mail_run:
 		send(test=test)
@@ -86,7 +87,8 @@ def send(test=False):
 		if False and int(time.time()) - int(last_updated) < cadence:
 			print 'Cadence not breached, continuing'
 			continue
-		new_output = commands.getoutput("""/bin/bash -c '""" + command + """'""").decode('latin_1')
+		(status,new_output) = commands.getstatusoutput("""/bin/bash -c '""" + command + """'""")
+		new_output = new_output.decode('latin_1')
 		print '================================================================================='
 		print 'NEW OUTPUT:'
 		print new_output.encode('latin_1')
@@ -102,8 +104,9 @@ def send(test=False):
 		f.write(str(output))
 		f.close()
 		print 'files written'
-		common_percent = int(commands.getoutput(r"""dwdiff -s old new 2>&1 > /dev/null | tail -1 | sed 's/.* \([0-9]\+\)..common.*/\1/' | sed 's/.*0 words.*/0/'"""))
-		diff = commands.getoutput(r"""diff old new""")
+		(status,common_percent) = commands.getstatusoutput(r"""dwdiff -s old new 2>&1 > /dev/null | tail -1 | sed 's/.* \([0-9]\+\)..common.*/\1/' | sed 's/.*0 words.*/0/'""")
+		common_percent = int(common_percent)
+		(status,diff) = commands.getstatusoutput(r"""diff old new""")
 		cursor2 = conn.cursor()
 		if not test and common_percent < int(common_threshold):
 				cursor2 = conn.cursor()
