@@ -16,7 +16,7 @@ import mailgun
 def main():
 	parser = argparse.ArgumentParser()
 	mail_run=True
-	parser.add_argument('--test', help='Do not send emails', const=True, default=False, action='store_const')
+	parser.add_argument('--test', help='Do not send emails or commit data', const=True, default=False, action='store_const')
 	parser.add_argument('--insert_alert', help="""Insert alert as a dictionary, eg --insert_alert '{"command":"ls","email_address":"...}'.\nFields are:\n\tcommand\n\temail_address\n\tdescription\n\toutput\n\tcadence\n\tcommon_threshold\n\tignore_output\n\toutput}'""",default='')
 	args = parser.parse_args(sys.argv[1:])
 	test = args.test
@@ -28,9 +28,9 @@ def main():
 	elif insert_alert != '':
 		import json
 		insert_dict = json.loads(insert_alert)
-		insert_row(insert_dict)
+		insert_row(insert_dict,test=test)
 	
-def insert_row(insert_dict):
+def insert_row(insert_dict,test=True):
 	command           = insert_dict['command']
 	email_address     = insert_dict['email_address']
 	description       = insert_dict['description']
@@ -41,7 +41,8 @@ def insert_row(insert_dict):
 	conn = _get_db_conn()
 	cursor = conn.cursor()
 	cursor.execute("insert into alert_on_change(command, common_threshold, email_address, description, cadence, ignore_output,output) values(%s,%s,%s,%s,%s,%s,%s)",(command,common_threshold,email_address,description,cadence,ignore_output.encode('latin-1'),output.encode('latin-1')))
-	conn.commit()
+	if not test:
+		conn.commit()
 	cursor.close()
 
 def _get_db_conn():	
@@ -49,7 +50,7 @@ def _get_db_conn():
 	# get a connection, if a connect cannot be made an exception will be raised here
 	return psycopg2.connect(conn_string)
 
-def send(test=False):
+def send(test=True):
 	conn = _get_db_conn()
 	# HERE IS THE IMPORTANT PART, by specifying a name for the cursor
 	# psycopg2 creates a server-side cursor, which prevents all of the
@@ -111,6 +112,7 @@ def send(test=False):
 		f.write(str(output))
 		f.close()
 		print 'files written'
+		(status,dwdiff_output) = commands.getstatusoutput(r"""dwdiff old new""")
 		(status,common_percent) = commands.getstatusoutput(r"""dwdiff -s old new 2>&1 > /dev/null | tail -1 | sed 's/.* \([0-9]\+\)..common.*/\1/' | sed 's/.*0 words.*/0/'""")
 		common_percent = int(common_percent)
 		(status,diff) = commands.getstatusoutput(r"""diff old new""")
@@ -125,13 +127,18 @@ COMMAND:
 
 ''' + command + '''
 
+WORD DIFF:
+
+''' + dwdiff_output + '''
+
 DIFF: 
 
 ''' + diff)
 		commands.getoutput('rm -f new old')
 		cursor2.close()
 	cursor.close()
-	conn.commit()
+	if not test:
+		conn.commit()
 
 
 if __name__ == "__main__":
