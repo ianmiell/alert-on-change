@@ -17,7 +17,7 @@ def main():
 	parser = argparse.ArgumentParser()
 	mail_run=True
 	parser.add_argument('--test', help='Do not send emails', const=True, default=False, action='store_const')
-	parser.add_argument('--insert_alert', help=r"""Insert alert as a dictionary, eg --insert_alert '{"command":"echo $[$RANDOM / 2]","email_address":"ian.miell@gmail.com","description":"output 1","cadence":"1","common_threshold":"100","ignore_output":"0"}'""",default='')
+	parser.add_argument('--insert_alert', help=r"""Insert alert as a dictionary, eg --insert_alert '{"command":"echo $[$RANDOM / 2]","email_address":"ian.miell@gmail.com","description":"output 1","cadence":"1","common_threshold":"100","ignore_output":"0","output":""}'""",default='')
 	args = parser.parse_args(sys.argv[1:])
 	test = args.test
 	insert_alert = args.insert_alert
@@ -37,9 +37,11 @@ def insert_row(insert_dict):
 	cadence           = insert_dict['cadence']
 	common_threshold  = insert_dict['common_threshold']
 	ignore_output     = insert_dict['ignore_output']
+	output            = insert_dict['output']
 	conn = _get_db_conn()
-	cursor = conn.cursor('cursor_unique_name', cursor_factory=psycopg2.extras.DictCursor)
-	cursor.execute("insert into alert_on_change(command, common_threshold, email_address, description, cadence, ignore_output) values(%s,%s,%s,%s,%s,%s)",(command,common_threshold,email_address,description,cadence,ignore_output.encode('latin-1')))
+	cursor = conn.cursor()
+	cursor.execute("insert into alert_on_change(command, common_threshold, email_address, description, cadence, ignore_output,output) values(%s,%s,%s,%s,%s,%s,%s)",(command,common_threshold,email_address,description,cadence,ignore_output.encode('latin-1'),output.encode('latin-1')))
+	cursor.close()
 
 def _get_db_conn():	
 	conn_string = "host='localhost' dbname='alert_on_change' user='postgres' password='password'"
@@ -126,6 +128,8 @@ DIFF:
 
 ''' + diff)
 		commands.getoutput('rm -f new old')
+		cursor2.close()
+	cursor.close()
 	conn.commit()
 
 
