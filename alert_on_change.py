@@ -88,7 +88,6 @@ class alert_on_change(ShutItModule):
 		shutit.send('echo create database alert_on_change | psql postgres')
 		shutit.send('psql alert_on_change < context/SCHEMA.sql')
 		shutit.send('psql alert_on_change < context/DATA.sql')
-		shutit.pause_point('')
 		shutit.send('''echo "alter user postgres password 'password'" | psql postgres''')
 		shutit.send('createuser -s alertonchange')
 		shutit.send('''echo "alter user alertonchange with password 'postgres'" | psql postgres''')
