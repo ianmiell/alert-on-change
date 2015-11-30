@@ -27,7 +27,7 @@ COPY alert_on_change (alert_on_change_id, command, ok_exit_codes, description, o
 -- Name: alert_on_change_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('alert_on_change_id_seq', 1, true);
+SELECT pg_catalog.setval('alert_on_change_id_seq', 5, true);
 
 
 --
