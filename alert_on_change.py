@@ -98,6 +98,8 @@ class alert_on_change(ShutItModule):
 		shutit.send('''sed -i 's/MAILGUNADDRESS/''' + shutit.cfg[self.module_id]['mailgunaddress'] + '''/g' /home/alertonchange/db.py''')
 		if not shutit.cfg[self.module_id]['testing']:
 			shutit.send("""echo "* * * * * python /home/alertonchange/db.py" | crontab -u alertonchange -""")
+		else:
+			shutit.send("""echo "* * * * * python /home/alertonchange/db.py --test" | crontab -u alertonchange -""")
 		shutit.logout()
 		if not shutit.cfg[self.module_id]['testing']:
 			shutit.login('postgres')
