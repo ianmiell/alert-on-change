@@ -36,11 +36,12 @@ def insert_row(insert_dict,test=True):
 	description       = insert_dict['description']
 	cadence           = insert_dict['cadence']
 	common_threshold  = insert_dict['common_threshold']
+	# It's a buffer, so convert to string
 	ignore_output     = insert_dict['ignore_output']
 	output            = insert_dict['output']
 	conn = _get_db_conn()
 	cursor = conn.cursor()
-	cursor.execute("insert into alert_on_change(command, common_threshold, email_address, description, cadence, ignore_output,output) values(%s,%s,%s,%s,%s,%s,%s)",(command,common_threshold,email_address,description,cadence,ignore_output.encode('latin-1'),output.encode('latin-1')))
+	cursor.execute("insert into alert_on_change(command, common_threshold, email_address, description, cadence, ignore_output, output) values(%s,%s,%s,%s,%s,%s,%s)",(command,common_threshold,email_address,description,cadence,ignore_output.encode('latin-1'),output.encode('latin-1')))
 	if not test:
 		conn.commit()
 	cursor.close()
@@ -71,7 +72,8 @@ def send(test=True):
 		description        = row[5]
 		last_updated       = row[6]
 		cadence            = row[7]
-		ignore_output      = row[8]
+		# Turn buffer into a string.
+		ignore_output      = str(row[8])
 		ok_exit_codes      = row[9]
 		print 'command: ' + command
 		print 'common_threshold: ' + str(common_threshold)
@@ -84,7 +86,7 @@ def send(test=True):
 		print 'OLD OUTPUT:'
 		print output
 		print 'IGNORE OUTPUT:'
-		print str(ignore_output)
+		print ignore_output
 		print 'cadence: ' + str(cadence)
 		print '================================================================================='
 		#if current time in seconds - time last updated in seconds < cadence, then skip
