@@ -33,12 +33,12 @@ fi
 
 for item in command email_address description
 do
-	if [[ $item = '' ]]
+	if [[ $(eval \$$item) = '' ]]
 	then
 		echo $item needs to be set
 		exit 1
 	fi
 done
 
-echo python db.py --insert_alert '{"command":"'$command'","email_address":"'$email_address'","description":"'$description'","output":"'$output'","cadence":"'$cadence'","common_threshold":"'$common_threshold'","ignore_output":"'$ignore_output'"}'
+echo python db.py --insert_alert \'\{\"command\":\"\'$command\'\",\"email_address\":\"\'$email_address\'\",\"description\":\"\'$description\'\",\"output\":\"\'$output\'\",\"cadence\":\"\'$cadence\'\",\"common_threshold\":\"\'$common_threshold\'\",\"ignore_output\":\"\'$ignore_output\'\"\}\'
 python db.py --insert_alert '{"command":"'$command'","email_address":"'$email_address'","description":"'$description'","output":"'$output'","cadence":"'$cadence'","common_threshold":"'$common_threshold'","ignore_output":"'$ignore_output'"}'
