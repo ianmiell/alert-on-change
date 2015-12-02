@@ -1,2 +1,6 @@
 # Format is: +COMMAND<TAB>EMAIL ADDRESS<TAB>COMMON WORDS THRESHOLD PERCENT, eg:
 # +curl bbc.co.uk/news	you@test.com	100
+
+# get an email when new players join the soccer group - event id changes each week which is a pita / TODO somehow
+curl -q http://www.meetup.com/Jumpers-for-Goalposts-Wellington-football-soccer/events/227117267/ | html2text | grep going	shazleto@gmail.com	100
+
