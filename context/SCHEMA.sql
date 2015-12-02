@@ -52,11 +52,11 @@ CREATE TABLE alert_on_change (
     command text NOT NULL,
     ok_exit_codes integer[] DEFAULT '{0}'::integer[] NOT NULL,
     description text DEFAULT ''::text NOT NULL,
-    output bytea DEFAULT '' NOT NULL,
+    output bytea DEFAULT '\x'::bytea NOT NULL,
     last_updated timestamp without time zone DEFAULT now() NOT NULL,
     common_threshold integer DEFAULT 100 NOT NULL,
     email_address text NOT NULL,
-    ignore_output bytea DEFAULT NULL,
+    ignore_output bytea,
     cadence integer DEFAULT 3600 NOT NULL
 );
 
