@@ -97,14 +97,14 @@ class alert_on_change(ShutItModule):
 		shutit.send('''sed -i 's/MAILGUNAPIUSER/''' + shutit.cfg[self.module_id]['mailgunapiuser'] + '''/g' /home/alertonchange/db.py''')
 		shutit.send('''sed -i 's/MAILGUNADDRESS/''' + shutit.cfg[self.module_id]['mailgunaddress'] + '''/g' /home/alertonchange/db.py''')
 		if not shutit.cfg[self.module_id]['testing']:
-			shutit.send("""echo "* * * * * python /home/alertonchange/db.py" | crontab -u alertonchange -""")
+			shutit.send("""echo "0,5,10,15,20,25,30,35,40,45,50,55 * * * * python /home/alertonchange/db.py" | crontab -u alertonchange -""")
 		else:
-			shutit.send("""echo "* * * * * python /home/alertonchange/db.py --test" | crontab -u alertonchange -""")
+			shutit.send("""echo "0,5,10,15,20,25,30,35,40,45,50,55 * * * * python /home/alertonchange/db.py --test" | crontab -u alertonchange -""")
 		shutit.logout()
 		if not shutit.cfg[self.module_id]['testing']:
 			shutit.login('postgres')
 			shutit.send('cd alert-on-change')
-			shutit.send(r"""echo "5,25,45 * * * * cd alert-on-change && pg_dump alert_on_change -a > context/DATA.sql && pg_dump alert_on_change -s > context/SCHEMA.sql && git commit -am 'latest backup' && /tmp/push.exp" | crontab -u postgres -""")
+			shutit.send(r"""echo "14,34,54 * * * * cd alert-on-change && pg_dump alert_on_change -a > context/DATA.sql && pg_dump alert_on_change -s > context/SCHEMA.sql && git commit -am 'latest backup' && /tmp/push.exp" | crontab -u postgres -""")
 			shutit.send_file('/tmp/push.exp',r'''#!/usr/bin/env expect
 set timeout 100
 spawn bash
