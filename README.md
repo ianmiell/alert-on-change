@@ -24,9 +24,11 @@ or even:
 curl somewebsite.com | html2text | grep -wi shutit | wc -l
 ```
 
+which will tell me when the number of case-insensitive mentions of 'shutit' on the webpage changes.
+
 ### Tuning the "Common Words Percentage Trigger"
 
-Obviously, the output of this can change a little bit and you don't care (eg a timestamp on the page), so you can specify a percentage of words common to the old output and the new output and it will work out if the diff has less than that percentage of words in common before alerting you.
+Obviously, the output of this can change a little bit and you don't care (eg a timestamp on a webpage), so you can specify a percentage of words common to the old output and the new output and it will work out if the diff has less than that percentage of words in common before alerting you.
 
 This defaults to 100, so any change will mail you. 0 would never mail you.
 
