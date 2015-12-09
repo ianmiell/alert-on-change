@@ -33,7 +33,7 @@ fi
 
 for item in command email_address description
 do
-	if [[ $(eval \$$item) = '' ]]
+	if [[ $(eval echo \$$(echo $item)) = '' ]]
 	then
 		echo $item needs to be set
 		exit 1
