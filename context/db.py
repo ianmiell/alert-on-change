@@ -41,7 +41,7 @@ def insert_row(insert_dict,test=True):
 	output            = insert_dict['output']
 	conn = _get_db_conn()
 	cursor = conn.cursor()
-	cursor.execute("insert into alert_on_change(command, common_threshold, email_address, description, cadence, ignore_output, output) values(%s,%s,%s,%s,%s,%s,%s)",(command,common_threshold,email_address,description,cadence,ignore_output.encode('latin-1'),output.encode('latin-1')))
+	cursor.execute("insert into alert_on_change(command, common_threshold, email_address, description, cadence, ignore_output, output) values(%s," + common_threshold + ",%s,%s," + cadence + ",%s,%s)",(command,common_threshold,email_address,description,cadence,ignore_output.encode('latin-1'),output.encode('latin-1')))
 	if not test:
 		conn.commit()
 	cursor.close()
