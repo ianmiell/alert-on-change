@@ -42,4 +42,4 @@ do
 done
 
 echo python db.py --insert_alert \'\{\"command\":\"\'$command\'\",\"email_address\":\"\'$email_address\'\",\"description\":\"\'$description\'\",\"output\":\"\'$output\'\",\"cadence\":\"\'$cadence\'\",\"common_threshold\":\"\'$common_threshold\'\",\"ignore_output\":\"\'$ignore_output\'\"\}\'
-python db.py --insert_alert '{"command":"$command","email_address":"$email_address","description":"$description","output":"$output","cadence":"$cadence","common_threshold":"$common_threshold","ignore_output":"$ignore_output"}'
+python db.py --insert_alert '{"command":"'"$command"'","email_address":"'"$email_address"'","description":"'"$description"'","output":"'"$output"'","cadence":"'"$cadence"'","common_threshold":"'"$common_threshold"'","ignore_output":"'"$ignore_output"'"}'
