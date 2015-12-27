@@ -57,7 +57,8 @@ CREATE TABLE alert_on_change (
     common_threshold integer DEFAULT 100 NOT NULL,
     email_address text NOT NULL,
     ignore_output bytea,
-    cadence integer DEFAULT 3600 NOT NULL
+    cadence integer DEFAULT 3600 NOT NULL,
+    follow_on_command text DEFAULT '' NOT NULL
 );
 
 

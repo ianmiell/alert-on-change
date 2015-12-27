@@ -14,6 +14,8 @@ echo 'common_threshold (empty is ok)'
 read common_threshold
 echo 'ignore_output (empty is ok)'
 read ignore_output
+echo 'follow-on-output (empty is ok)'
+read follow_on_output
 
 if [[ $common_threshold = '' ]]
 then
@@ -31,6 +33,10 @@ if [[ $ignore_output = '' ]]
 then
 	ignore_output=""
 fi
+if [[ $follow_on_output = '' ]]
+then
+	follow_on_output=""
+fi
 
 for item in command email_address description
 do
@@ -41,5 +47,4 @@ do
 	fi
 done
 
-echo python db.py --insert_alert \'\{\"command\":\"\'$command\'\",\"email_address\":\"\'$email_address\'\",\"description\":\"\'$description\'\",\"output\":\"\'$output\'\",\"cadence\":\"\'$cadence\'\",\"common_threshold\":\"\'$common_threshold\'\",\"ignore_output\":\"\'$ignore_output\'\"\}\'
-python db.py --insert_alert '{"command":"'"$command"'","email_address":"'"$email_address"'","description":"'"$description"'","output":"'"$output"'","cadence":"'"$cadence"'","common_threshold":"'"$common_threshold"'","ignore_output":"'"$ignore_output"'"}'
+python db.py --insert_alert '{"command":"'"$command"'","email_address":"'"$email_address"'","description":"'"$description"'","output":"'"$output"'","cadence":"'"$cadence"'","common_threshold":"'"$common_threshold"'","ignore_output":"'"$ignore_output"'","follow_on_output":"'"$follow_on_output"'"}'
