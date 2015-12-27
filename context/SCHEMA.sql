@@ -58,7 +58,7 @@ CREATE TABLE alert_on_change (
     email_address text NOT NULL,
     ignore_output bytea,
     cadence integer DEFAULT 3600 NOT NULL,
-    follow_on_command text DEFAULT '' NOT NULL
+    follow_on_command text DEFAULT ''::text NOT NULL
 );
 
 
