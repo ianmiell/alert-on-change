@@ -75,6 +75,7 @@ class alert_on_change(ShutItModule):
 		shutit.install('curl git dwdiff html2text python-psycopg2 sudo cron expect wget python-dev python-pip')
 		shutit.send('pip install simplejson')
 		shutit.send('pip install mailgun')
+		shutit.send('pip install web.py')
 		shutit.send('groupadd -g 1000 alertonchange')
 		shutit.send('useradd -g alertonchange -d /home/alertonchange -s /bin/bash -m alertonchange')
 		shutit.send('adduser alertonchange sudo')
