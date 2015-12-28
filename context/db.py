@@ -17,7 +17,7 @@ def main():
 	parser = argparse.ArgumentParser()
 	mail_run=True
 	parser.add_argument('--test', help='Do not send emails or commit data', const=True, default=False, action='store_const')
-	parser.add_argument('--insert_alert', help="""Insert alert as a dictionary, eg --insert_alert '{"command":"ls","email_address":"...}'.\nFields are:\n\tcommand\n\temail_address\n\tdescription\n\toutput\n\tcadence\n\tcommon_threshold\n\tignore_output\n\toutput\n\tfollow_on_output}'""",default='')
+	parser.add_argument('--insert_alert', help="""Insert alert as a dictionary, eg --insert_alert '{"command":"ls","email_address":"...}'.\nFields are:\n\tcommand\n\temail_address\n\tdescription\n\toutput\n\tcadence\n\tcommon_threshold\n\tignore_output\n\toutput\n\tfollow_on_command}'""",default='')
 	args = parser.parse_args(sys.argv[1:])
 	test = args.test
 	insert_alert = args.insert_alert
@@ -39,7 +39,7 @@ def insert_row(insert_dict,test=True):
 	# It's a buffer, so convert to string
 	ignore_output     = insert_dict['ignore_output']
 	output            = insert_dict['output']
-	follow_on_output  = insert_dict['follow_on_output']
+	follow_on_command = insert_dict['follow_on_command']
 	conn = _get_db_conn()
 	cursor = conn.cursor()
 	cursor.execute("insert into alert_on_change(command, common_threshold, email_address, description, cadence, ignore_output, output, follow_on_command) values(%s,%s,%s,%s,%s,%s,%s,%s)",(command,common_threshold,email_address,description,cadence,ignore_output.encode('latin-1'),output.encode('latin-1'),follow_on_command))
