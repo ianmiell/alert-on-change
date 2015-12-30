@@ -1,0 +1,63 @@
+#!/usr/bin/python
+import web
+from web import form
+
+render = web.template.render('templates/')
+
+urls = ('/', 'index')
+app = web.application(urls, globals())
+
+TODO
+myform = form.Form( 
+    form.Textbox("boe"), 
+    form.Textbox("bax", 
+        form.notnull,
+        form.regexp('\d+', 'Must be a digit'),
+        form.Validator('Must be more than 5', lambda x:int(x)>5)),
+    form.Textarea('moe'),
+    form.Checkbox('curly'), 
+    form.Dropdown('french', ['mustard', 'fries', 'wine'])) 
+
+
+def insert_row(insert_dict,test=True):
+	command           = insert_dict['command']
+	email_address     = insert_dict['email_address']
+	description       = insert_dict['description']
+	cadence           = int(insert_dict['cadence'])
+	common_threshold  = int(insert_dict['common_threshold'])
+	# It's a buffer, so convert to string
+	ignore_output     = insert_dict['ignore_output']
+	output            = insert_dict['output']
+	follow_on_command = insert_dict['follow_on_command']
+	conn = _get_db_conn()
+	cursor = conn.cursor()
+	cursor.execute("insert into alert_on_change(command, common_threshold, email_address, description, cadence, ignore_output, output, follow_on_command) values(%s,%s,%s,%s,%s,%s,%s,%s)",(command,common_threshold,email_address,description,cadence,ignore_output.encode('latin-1'),output.encode('latin-1'),follow_on_command))
+	if not test:
+		conn.commit()
+	cursor.close()
+
+def _get_db_conn():	
+	conn_string = "host='localhost' dbname='alert_on_change' user='postgres' password='password'"
+	# get a connection, if a connect cannot be made an exception will be raised here
+	return psycopg2.connect(conn_string)
+
+TODO
+class index: 
+    def GET(self): 
+        form = myform()
+        # make sure you create a copy of the form by calling it (line above)
+        # Otherwise changes will appear globally
+        return render.formtest(form)
+
+    def POST(self): 
+        form = myform() 
+        if not form.validates(): 
+            return render.formtest(form)
+        else:
+            # form.d.boe and form['boe'].value are equivalent ways of
+            # extracting the validated arguments from the form.
+            return "Grrreat success! boe: %s, bax: %s" % (form.d.boe, form['bax'].value)
+
+if __name__=="__main__":
+    web.internalerror = web.debugerror
+    app.run()
