@@ -7,18 +7,6 @@ render = web.template.render('templates/')
 urls = ('/', 'index')
 app = web.application(urls, globals())
 
-TODO
-myform = form.Form( 
-    form.Textbox("boe"), 
-    form.Textbox("bax", 
-        form.notnull,
-        form.regexp('\d+', 'Must be a digit'),
-        form.Validator('Must be more than 5', lambda x:int(x)>5)),
-    form.Textarea('moe'),
-    form.Checkbox('curly'), 
-    form.Dropdown('french', ['mustard', 'fries', 'wine'])) 
-
-
 def insert_row(insert_dict,test=True):
 	command           = insert_dict['command']
 	email_address     = insert_dict['email_address']
@@ -41,7 +29,18 @@ def _get_db_conn():
 	# get a connection, if a connect cannot be made an exception will be raised here
 	return psycopg2.connect(conn_string)
 
-TODO
+myform = form.Form( 
+    form.Textarea("command"), 
+    form.Textbox("email_address"), 
+    form.Textarea("description"), 
+    form.Textbox("cadence", form.notnull, form.regexp('\d+', 'Must be a digit'), form.Validator('Must be more than 60', lambda x:int(x)>60)),
+    form.Textbox("common_threshold", form.notnull, form.regexp('\d+', 'Must be a digit'), form.Validator('Must be more than 0', lambda x:int(x)>0), form.Validator('Must be less than or equal to 100', lambda x:int(x)<=100)),
+    form.Textbox('ignore_output'),
+    form.Textbox('output'),
+    form.Textarea('follow_on_command')
+    ) 
+
+
 class index: 
     def GET(self): 
         form = myform()
@@ -54,9 +53,18 @@ class index:
         if not form.validates(): 
             return render.formtest(form)
         else:
-            # form.d.boe and form['boe'].value are equivalent ways of
-            # extracting the validated arguments from the form.
-            return "Grrreat success! boe: %s, bax: %s" % (form.d.boe, form['bax'].value)
+			insert_dict={}
+			insert_dict['command']           = form.d.command
+			insert_dict['email_address']     = form.d.email_address
+			insert_dict['description']       = form.d.description
+			insert_dict['cadence']           = int(form.d.cadence)
+			insert_dict['common_threshold']  = int(form.d.common_threshold)
+			insert_dict['ignore_output']     = form.d.ignore_output
+			insert_dict['output']            = form.d.output
+			insert_dict['follow_on_command'] = form.d.follow_on_command
+			insert_row()
+			return 'OK'
+            #return "Grrreat success! boe: %s, bax: %s" % (form.d.boe, form['bax'].value)
 
 if __name__=="__main__":
     web.internalerror = web.debugerror
