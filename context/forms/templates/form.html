@@ -1,0 +1,27 @@
+$def with (form)
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="/static/css/bootstrap.min.css" rel="stylesheet">
+	</head>
+	<body>
+		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+		<!-- Include all compiled plugins (below), or include individual files as needed -->
+		<script src="/static/js/bootstrap.min.js"></script>
+		<link href="/static/signin.css" rel="stylesheet">   
+	    <div class="container">
+			<form class="form-signin" name="main" method="post"> 
+				<h2 class="form-signin-heading">Hacker News Alert</h2>
+				$if not form.valid: <p class="error">Try again:</p>
+				$:form.render()
+				<input type="submit" class="btn btn-lg btn-primary btn-block" value="Go!"/>
+			</form>
+			<h5>Informs you by email when an article hits the front page of HN.</h5>
+			<h5>Built and managed using <a href='https://docker.com'>Docker</a>, <a href='https://github.com/ianmiell/shutit/blob/master/README.md'>ShutIt</a> and <a href='https://github.com/ianmiell/alert-on-change/blob/master/README.md'>alert-on-change</a><br/>as well as techniques discussed in my <a href='https://zwischenzugs.wordpress.com/'>blog</a> and book <a href='http://manning.com/miell/?a_aid=zwischenzugs&a_bid=e0d48f62'>Docker in Practice</a></h5>
+		</div>
+	</body>
+</html>
